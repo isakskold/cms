@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import useSidebarStore from "@/stores/useSidebarStore";
 
 export default function Home() {
   const router = useRouter();
+  const { toggleSidebar } = useSidebarStore();
 
   return (
     <div className="h-full flex justify-center items-center">
@@ -12,6 +14,7 @@ export default function Home() {
         onSubmit={(e) => {
           e.preventDefault(); // Prevent actual form submission
           router.push("/dashboard");
+          toggleSidebar();
         }}
       >
         <h2 className="text-2xl font-bold text-center">Login</h2>
