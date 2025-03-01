@@ -1,0 +1,20 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: isaks
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: serverless
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-north-1
+  httpApi: # Define the API Gateway for the whole service here
+    id: ny2wtm2guh # Your existing HTTP API ID
+    name: cms-api
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
