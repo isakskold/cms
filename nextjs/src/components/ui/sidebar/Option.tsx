@@ -8,10 +8,10 @@ interface Props {
 }
 
 const Option: React.FC<Props> = ({ label, link, className }) => {
-  const { toggleSidebar } = useSidebarStore(); // Access the store's toggleSidebar action
+  const { setSidebar } = useSidebarStore(); // Access the store's toggleSidebar action
 
   const handleClick = () => {
-    toggleSidebar(); // Toggle the sidebar visibility
+    setSidebar(false); // Toggle the sidebar visibility
   };
 
   return (

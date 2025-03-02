@@ -6,12 +6,12 @@ import { usePathname, useRouter } from "next/navigation";
 interface Props {}
 
 const MobileHeader: React.FC<Props> = () => {
-  const { isOpen, toggleSidebar } = useSidebarStore();
+  const { isOpen, setSidebar } = useSidebarStore();
   const pathname = usePathname(); // Get current route
   const router = useRouter();
 
   const handleCLick = () => {
-    toggleSidebar();
+    setSidebar(true);
   };
 
   const handleBack = () => {

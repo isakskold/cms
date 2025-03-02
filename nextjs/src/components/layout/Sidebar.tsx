@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { usePathname } from "next/navigation";
 import useSidebarStore from "@/stores/useSidebarStore";
 import Logo from "../ui/sidebar/Logo";
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = () => {
+  const { isLoggedIn } = useAuthStore();
   const pathname = usePathname();
   const options = ["Dashboard", "Settings", "Help"];
   const { isOpen } = useSidebarStore();

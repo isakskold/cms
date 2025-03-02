@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import useSidebarStore from "@/stores/useSidebarStore";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import signUpUser from "@/requests/user/signUpUser";
 import signInUser from "@/requests/user/signInUser";
 
 export default function Home() {
   const router = useRouter();
-  const { toggleSidebar } = useSidebarStore();
+  const { email: emailAuth, setEmail: setEmailAuth } = useAuthStore();
 
   // State to store the email, password, and form type
   const [isSignIn, setIsSignIn] = useState<boolean>(true);
@@ -17,6 +17,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (emailAuth) {
+      router.push("/dashboard");
+    }
+  }, [emailAuth, router]); // Runs when `emailAuth` changes
 
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,8 +35,12 @@ export default function Home() {
       if (isSignIn) {
         // Sign in logic
         await signInUser(email, password);
+        setSuccessMessage("User logged in");
+        setEmail("");
+        setEmailAuth(email);
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        setSuccessMessage(null);
         router.push("/dashboard");
-        toggleSidebar();
       } else {
         // Sign up logic
         await signUpUser(email, password);
@@ -45,6 +55,8 @@ export default function Home() {
       setError(err.message || "An error occurred");
     } finally {
       setLoading(false); // Stop loading
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
+      setSuccessMessage(null);
     }
   };
 
@@ -76,13 +88,15 @@ export default function Home() {
           onChange={(e) => setPassword(e.target.value)} // Update password state
         />
 
-        {/* Error Message */}
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        <div className="min-h-8 -my-3">
+          {/* Error Message */}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        {/* Success Message */}
-        {successMessage && (
-          <p className="text-green-500 text-sm">{successMessage}</p>
-        )}
+          {/* Success Message */}
+          {successMessage && (
+            <p className="text-green-500 text-sm">{successMessage}</p>
+          )}
+        </div>
 
         {/* Submit Button */}
         <button
