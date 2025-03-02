@@ -24,6 +24,17 @@ functions:
           path: /user/signup
           method: post
 
+  signin:
+    handler: handlers/user/signin.handler
+    role:
+      Fn::GetAtt:
+        - DynamoDbAccessRole
+        - Arn
+    events:
+      - httpApi:
+          path: /user/signin
+          method: post
+
 resources:
   Resources:
     # DynamoDB Table
