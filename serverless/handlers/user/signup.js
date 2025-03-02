@@ -1,4 +1,9 @@
-const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
+const {
+  DynamoDBClient,
+  PutItemCommand,
+  GetItemCommand,
+} = require("@aws-sdk/client-dynamodb");
+const createResponse = require("../../goodStuffToHave/createResponse");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
 
@@ -7,18 +12,25 @@ exports.handler = async (event) => {
 
   try {
     if (!event.body) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: "Request body missing" }),
-      };
+      return createResponse(400, "Request body missing");
     }
 
     const { email, password } = JSON.parse(event.body);
     if (!email || !password) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: "Email and password are required" }),
-      };
+      return createResponse(400, "Email and password are required");
+    }
+
+    // Check if email already exists by querying the table first
+    const checkParams = {
+      TableName: "usersTable",
+      Key: { email: { S: email } },
+      ProjectionExpression: "email",
+    };
+
+    const existingUser = await client.send(new GetItemCommand(checkParams));
+
+    if (existingUser.Item) {
+      return createResponse(400, "Email is already in use");
     }
 
     const params = {
@@ -32,21 +44,11 @@ exports.handler = async (event) => {
 
     await client.send(new PutItemCommand(params));
 
-    return {
-      statusCode: 201,
-      body: JSON.stringify({
-        message: "User created successfully",
-        user: { email },
-      }),
-    };
+    return createResponse(201, "User created successfully", { email });
   } catch (error) {
     console.error("Error in signup:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: "Internal Server Error",
-        error: error.message,
-      }),
-    };
+    return createResponse(500, "Internal Server Error", {
+      error: error.message,
+    });
   }
 };
