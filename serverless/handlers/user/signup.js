@@ -39,6 +39,7 @@ exports.handler = async (event) => {
         email: { S: email },
         password: { S: password },
         createdAt: { S: new Date().toISOString() },
+        projects: { L: [] }, // Empty list of projects
       },
     };
 
