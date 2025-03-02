@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import signUpUser from "@/requests/user/signUpUser";
 import signInUser from "@/requests/user/signInUser";
 
 export default function Home() {
   const router = useRouter();
+  const pathname = usePathname();
   const { email: emailAuth, setEmail: setEmailAuth } = useAuthStore();
 
   // State to store the email, password, and form type
@@ -19,10 +20,10 @@ export default function Home() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (emailAuth) {
+    if (emailAuth && pathname !== "/dashboard") {
       router.push("/dashboard");
     }
-  }, [emailAuth, router]); // Runs when `emailAuth` changes
+  }, [emailAuth, router]);
 
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,6 +58,7 @@ export default function Home() {
       setLoading(false); // Stop loading
       await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
       setSuccessMessage(null);
+      setError(null);
     }
   };
 
@@ -88,7 +90,7 @@ export default function Home() {
           onChange={(e) => setPassword(e.target.value)} // Update password state
         />
 
-        <div className="min-h-8 -my-3">
+        <div className=" flex min-h-8 -my-3 text-center justify-center items-center">
           {/* Error Message */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
