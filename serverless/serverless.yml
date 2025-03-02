@@ -7,14 +7,92 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: eu-north-1
-  httpApi: # Define the API Gateway for the whole service here
-    id: ny2wtm2guh # Your existing HTTP API ID
+  httpApi:
+    id: ny2wtm2guh
     name: cms-api
+  role: LambdaExecutionRole # Global role for allowing logs to CloudWatch
 
 functions:
-  hello:
-    handler: handler.hello
+  signup:
+    handler: handlers/user/signup.handler
+    role:
+      Fn::GetAtt:
+        - DynamoDbAccessRole
+        - Arn
     events:
       - httpApi:
-          path: /
-          method: get
+          path: /user/signup
+          method: post
+
+  signin:
+    handler: handlers/user/signin.handler
+    role:
+      Fn::GetAtt:
+        - DynamoDbAccessRole
+        - Arn
+    events:
+      - httpApi:
+          path: /user/signin
+          method: post
+
+resources:
+  Resources:
+    # DynamoDB Table
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: usersTable
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # DynamoDB Access Role
+    DynamoDbAccessRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: sts:AssumeRole
+              Principal:
+                Service: lambda.amazonaws.com
+        Policies:
+          - PolicyName: DynamoDbAccessPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamodb:PutItem
+                    - dynamodb:GetItem
+                    - dynamodb:UpdateItem
+                    - dynamodb:DeleteItem
+                  Resource: arn:aws:dynamodb:eu-north-1:586794470362:table/usersTable
+
+    # CloudWatch Logging Role
+    LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: sts:AssumeRole
+              Principal:
+                Service: lambda.amazonaws.com
+        Policies:
+          - PolicyName: LambdaCloudWatchLoggingPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: arn:aws:logs:eu-north-1:*:* # Allow writing to CloudWatch Logs

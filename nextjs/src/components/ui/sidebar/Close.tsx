@@ -5,9 +5,9 @@ import useSidebarStore from "@/stores/useSidebarStore";
 interface Props {}
 
 const Close: React.FC<Props> = () => {
-  const { toggleSidebar } = useSidebarStore();
+  const { setSidebar } = useSidebarStore();
   const handleClick = () => {
-    toggleSidebar();
+    setSidebar(false);
   };
   return (
     <button className="text-3xl p-3" onClick={handleClick}>

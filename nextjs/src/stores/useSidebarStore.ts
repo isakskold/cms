@@ -2,12 +2,12 @@ import { create } from "zustand";
 
 interface Store {
   isOpen: boolean;
-  toggleSidebar: () => void;
+  setSidebar: (isOpen: boolean) => void;
 }
 
 const useSidebarStore = create<Store>((set) => ({
   isOpen: false, // Initial state of the sidebar (closed by default)
-  toggleSidebar: () => set((state) => ({ isOpen: !state.isOpen })),
+  setSidebar: (isOpen) => set({ isOpen }), // Directly set the state based on the argument
 }));
 
 export default useSidebarStore;
