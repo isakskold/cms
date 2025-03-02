@@ -1,47 +1,51 @@
+const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
+
+const client = new DynamoDBClient({ region: "eu-north-1" });
+
 exports.handler = async (event) => {
   console.log("Received event:", JSON.stringify(event));
+
   try {
     if (!event.body) {
       return {
         statusCode: 400,
-        body: JSON.stringify({
-          message: "Request body missing",
-        }),
+        body: JSON.stringify({ message: "Request body missing" }),
       };
     }
 
     const { email, password } = JSON.parse(event.body);
-
-    // Basic validation for email and password
     if (!email || !password) {
       return {
         statusCode: 400,
-        body: JSON.stringify({
-          message: "Email and password are required",
-        }),
+        body: JSON.stringify({ message: "Email and password are required" }),
       };
     }
 
-    // Here, you would typically add logic to create the user in your database
-    // For example, saving to DynamoDB, checking if the email already exists, etc.
+    const params = {
+      TableName: "usersTable",
+      Item: {
+        email: { S: email },
+        password: { S: password },
+        createdAt: { S: new Date().toISOString() },
+      },
+    };
 
-    // Mock success message
+    await client.send(new PutItemCommand(params));
+
     return {
       statusCode: 201,
       body: JSON.stringify({
-        message: "Signup successful",
-        user: { email }, // Return the email of the created user (for example)
+        message: "User created successfully",
+        user: { email },
       }),
     };
   } catch (error) {
     console.error("Error in signup:", error);
-
     return {
       statusCode: 500,
       body: JSON.stringify({
         message: "Internal Server Error",
-        error: error.message, // Log the error message here
-        stack: error.stack,
+        error: error.message,
       }),
     };
   }
