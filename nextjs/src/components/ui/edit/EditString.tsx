@@ -41,12 +41,14 @@ const EditString: React.FC<Props> = ({ label }) => {
   return (
     <div className="flex flex-col gap-1">
       <label className="font-semibold">{label}</label>
-      <input
-        className="p-1 rounded-xl"
-        type="text"
-        value={value}
-        onChange={handleChange}
-      />
+      <div>
+        <input
+          className="p-1 rounded-xl field-sizing-content min-w-24 max-w-full"
+          type="text"
+          value={value}
+          onChange={handleChange}
+        />
+      </div>
     </div>
   );
 };
