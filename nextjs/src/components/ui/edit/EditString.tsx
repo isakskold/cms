@@ -16,7 +16,7 @@ interface Props {
 
 const EditString: React.FC<Props> = ({ label }) => {
   const { id } = useParams();
-  const projectId = Number(id);
+  const projectId = String(id);
 
   // Get the persistent project data from the store.
   const project = useProjectStore((state) =>

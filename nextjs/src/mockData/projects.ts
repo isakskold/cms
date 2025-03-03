@@ -2,7 +2,7 @@ import { Project } from "@/types/data/project";
 
 export const mockData: Project[] = [
   {
-    id: 1,
+    id: "1",
     name: "Project 1",
     lastEdited: "2025-02-08 14:30",
     logo: "",
@@ -18,7 +18,7 @@ export const mockData: Project[] = [
     ],
   },
   {
-    id: 2,
+    id: "2",
     name: "Project 2",
     lastEdited: "2025-02-09 09:15",
     logo: "",
@@ -33,7 +33,7 @@ export const mockData: Project[] = [
     ],
   },
   {
-    id: 3,
+    id: "3",
     name: "Project 3",
     lastEdited: "2025-02-10 18:45",
     logo: "",

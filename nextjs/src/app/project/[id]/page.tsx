@@ -11,7 +11,7 @@ import { Project } from "@/types/data/project";
 
 const ProjectPage = () => {
   const { id } = useParams();
-  const projectId = Number(id);
+  const projectId = String(id);
   const { projects, addProject, updateProject, inputProject, setInputProject } =
     useProjectStore();
 
