@@ -22,7 +22,10 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: "auth-storage", // Key used in localStorage
       storage: createJSONStorage(() => localStorage), // Use localStorage for persistence
-      partialize: (state) => ({ email: state.email }), // Only persist email
+      partialize: (state) => ({
+        email: state.email,
+        isLoggedIn: state.isLoggedIn,
+      }), // Only persist email
     }
   )
 );
