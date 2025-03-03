@@ -5,7 +5,6 @@ import { mockData } from "@/mockData/projects";
 import SaveOrDiscardBtn from "@/components/ui/buttons/SaveOrDiscardBtn";
 import useProjectStore from "@/stores/project/useProjectStore";
 import EditImages from "@/components/ui/edit/EditImages";
-import EditLongDesc from "@/components/ui/edit/EditLongDesc";
 import EditSkills from "@/components/ui/edit/EditSkills";
 import EditString from "@/components/ui/edit/EditString";
 import { Project } from "@/types/data/project";
@@ -50,7 +49,7 @@ const ProjectPage = () => {
           <EditString label="name" />
           <EditString label="logo" />
           <EditString label="description" />
-          <EditLongDesc />
+          <EditString label="longDescription" />
           <EditSkills />
           <EditImages />
           <EditString label="website" />
