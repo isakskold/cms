@@ -5,7 +5,13 @@ import useProjectStore from "@/stores/project/useProjectStore";
 import { Project } from "@/types/data/project";
 
 interface Props {
-  label: "name" | "logo" | "description" | "website" | "github";
+  label:
+    | "name"
+    | "logo"
+    | "description"
+    | "website"
+    | "github"
+    | "longDescription";
 }
 
 const EditString: React.FC<Props> = ({ label }) => {
@@ -28,7 +34,14 @@ const EditString: React.FC<Props> = ({ label }) => {
       ? project[label]
       : "";
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  // Log the value of longDescription to see what it looks like.
+  if (label === "longDescription") {
+    console.log("longDescription value:", value);
+  }
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     // If there's already temporary data, update it.
     if (inputProject) {
       setInputProject({ ...inputProject, [label]: e.target.value });
@@ -42,12 +55,21 @@ const EditString: React.FC<Props> = ({ label }) => {
     <div className="flex flex-col gap-1">
       <label className="font-semibold">{label}</label>
       <div>
-        <input
-          className="p-1 rounded-xl field-sizing-content min-w-24 max-w-full"
-          type="text"
-          value={value}
-          onChange={handleChange}
-        />
+        {label === "longDescription" ? (
+          <textarea
+            className="p-1 rounded-xl field-sizing-content min-w-24 max-w-full"
+            value={value}
+            onChange={handleChange}
+            rows={5} // Adjust rows as needed
+          />
+        ) : (
+          <input
+            className="p-1 rounded-xl field-sizing-content min-w-24 max-w-full"
+            type="text"
+            value={value}
+            onChange={handleChange}
+          />
+        )}
       </div>
     </div>
   );
