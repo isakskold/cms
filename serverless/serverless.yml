@@ -10,9 +10,19 @@ provider:
   httpApi:
     id: ny2wtm2guh
     name: cms-api
-  role: LambdaExecutionRole # Global role for allowing logs to CloudWatch
 
 functions:
+  createProject:
+    handler: handlers/project/createProject.handler
+    role:
+      Fn::GetAtt:
+        - DynamoDbAccessRole
+        - Arn
+    events:
+      - httpApi:
+          path: /project/create
+          method: post
+
   signup:
     handler: handlers/user/signup.handler
     role:
@@ -73,26 +83,9 @@ resources:
                     - dynamodb:UpdateItem
                     - dynamodb:DeleteItem
                   Resource: arn:aws:dynamodb:eu-north-1:586794470362:table/usersTable
-
-    # CloudWatch Logging Role
-    LambdaExecutionRole:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action: sts:AssumeRole
-              Principal:
-                Service: lambda.amazonaws.com
-        Policies:
-          - PolicyName: LambdaCloudWatchLoggingPolicy
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: Allow
+                - Effect: Allow # Add CloudWatch permissions
                   Action:
                     - logs:CreateLogGroup
                     - logs:CreateLogStream
                     - logs:PutLogEvents
-                  Resource: arn:aws:logs:eu-north-1:*:* # Allow writing to CloudWatch Logs
+                  Resource: arn:aws:logs:eu-north-1:*:*
