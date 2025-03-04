@@ -12,6 +12,18 @@ provider:
     name: cms-api
 
 functions:
+  # Project functions
+  fetchProjects:
+    handler: handlers/project/fetchProjects.handler
+    role:
+      Fn::GetAtt:
+        - DynamoDbAccessRole
+        - Arn
+    events:
+      - httpApi:
+          path: /project/fetch
+          method: get
+
   createProject:
     handler: handlers/project/createProject.handler
     role:
@@ -23,6 +35,7 @@ functions:
           path: /project/create
           method: post
 
+  # User functions
   signup:
     handler: handlers/user/signup.handler
     role:
