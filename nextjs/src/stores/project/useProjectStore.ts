@@ -8,7 +8,7 @@ interface ProjectStore {
   setProjects: (projects: Project[]) => void;
   addProject: (project: Project) => void;
   updateProject: (updatedProject: Project) => void;
-  removeProject: (id: number) => void;
+  removeProject: (id: string) => void;
   setInputProject: (project: Project | null) => void;
 }
 

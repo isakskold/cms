@@ -1,10 +1,10 @@
 export interface Project {
-  id: number;
+  id: string;
   lastEdited: string;
   name: string;
   logo: string;
   description: string;
-  longDescription: string[];
+  longDescription: string;
   skills: string[];
   website: string;
   github: string;

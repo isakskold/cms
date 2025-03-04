@@ -23,10 +23,13 @@ const MobileHeader: React.FC<Props> = () => {
 
   return (
     <div className="flex justify-between p-2 border-b border-gray-800">
-      <button onClick={handleBack} className="mr-4">
-        <FaArrowLeft size={32} />
-      </button>
-      <button onClick={handleCLick}>
+      {/* Conditionally render the back button if the pathname is not "/dashboard" */}
+      {pathname !== "/dashboard" && (
+        <button onClick={handleBack} className="mr-4">
+          <FaArrowLeft size={32} />
+        </button>
+      )}
+      <button className="ml-auto" onClick={handleCLick}>
         <FaBars size={32} />
       </button>
     </div>

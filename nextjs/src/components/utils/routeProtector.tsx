@@ -5,15 +5,15 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 
 const RouteProtector: React.FC = () => {
-  const { isLoggedIn } = useAuthStore();
+  const { email } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!email) {
       router.replace("/"); // Redirect to login page if not authenticated
     }
-  }, [isLoggedIn, router, pathname]);
+  }, [email, router, pathname]);
 
   return null; // This component doesn't render anything
 };

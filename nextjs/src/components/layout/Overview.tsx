@@ -2,22 +2,30 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { mockData } from "@/mockData/projects";
 import useProjectStore from "@/stores/project/useProjectStore";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import fetchProjects from "@/requests/project/fetchProjects";
 
 interface Props {}
 
 const Overview: React.FC<Props> = () => {
   const router = useRouter();
   const { projects, setProjects } = useProjectStore();
+  const { email } = useAuthStore();
 
-  // Initialize store with mock data if empty
   useEffect(() => {
-    if (projects.length === 0) {
-      setProjects(mockData);
-      console.log("Initialized store with mock data");
+    if (email) {
+      (async () => {
+        try {
+          const response = await fetchProjects(email);
+          setProjects(response);
+          console.log("Initialized store with fetched data");
+        } catch (error) {
+          console.error("Error fetching projects:", error);
+        }
+      })();
     }
-  }, [projects.length, setProjects]);
+  }, []);
 
   return (
     <div className="overflow-x-auto">
