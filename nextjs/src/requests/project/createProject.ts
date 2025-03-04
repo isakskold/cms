@@ -1,14 +1,15 @@
 import axios from "axios";
 import { Project } from "@/types/data/project";
 
-const createProject = async (email: string, project: Project) => {
+const createProject = async (token: string, project: Project) => {
   const url =
     "https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/project/create";
 
   try {
-    const response = await axios.post(url, {
-      email,
-      project,
+    const response = await axios.post(url, project, {
+      headers: {
+        "x-custom-authorization": token, // Just send the token directly without the "Bearer" prefix
+      },
     });
 
     return response.data;

@@ -1,18 +1,23 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import SaveOrDiscardBtn from "@/components/ui/buttons/SaveOrDiscardBtn";
 import useProjectStore from "@/stores/project/useProjectStore";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 import EditImages from "@/components/ui/edit/EditImages";
 import EditSkills from "@/components/ui/edit/EditSkills";
 import EditString from "@/components/ui/edit/EditString";
-import { Project } from "@/types/data/project";
+import createProject from "@/requests/project/createProject";
 
 const ProjectPage = () => {
   const { id } = useParams();
+  const router = useRouter();
   const projectId = String(id);
   const { projects, addProject, updateProject, inputProject, setInputProject } =
     useProjectStore();
+  const { email } = useAuthStore();
+  const [successMsg, setSuccessMsg] = useState<string | null>();
+  const [success, setSuccess] = useState<boolean>(false);
 
   useEffect(() => {
     setInputProject(null); // Reset input state when switching projects
@@ -27,15 +32,35 @@ const ProjectPage = () => {
   const project = projects.find((p) => p.id === projectId);
 
   // Save changes by updating the project in the store
-  const handleSave = () => {
-    if (inputProject) {
-      console.log("input project to save", inputProject);
+  const handleSave = async () => {
+    try {
+      if (inputProject) {
+        console.log("input project to save", inputProject);
 
-      const newProject = {
-        ...inputProject,
-        lastEdited: new Date().toISOString(),
-      };
-      updateProject(newProject);
+        const newProject = {
+          ...inputProject,
+          lastEdited: new Date().toISOString(),
+        };
+
+        // Update the project in the store
+        updateProject(newProject);
+
+        console.log("email from useAuthStore:", email);
+
+        // Create the project via the API
+        await createProject(email as string, newProject);
+        setSuccessMsg("Project saved...");
+        setSuccess(true);
+
+        console.log("Project saved successfully.");
+
+        // Navigate to /dashboard after 2 seconds
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error saving project:", error);
     }
   };
 
@@ -55,13 +80,19 @@ const ProjectPage = () => {
           <EditString label="github" />
         </div>
 
-        <div className="flex justify-around">
-          <SaveOrDiscardBtn action="save" onClick={handleSave} />
-          <SaveOrDiscardBtn
-            action="discard"
-            onClick={() => console.log("Discarded")}
-          />
-        </div>
+        {success ? (
+          <span className="text-center text-green-500 text-xl font-semibold tracking-wider">
+            {successMsg}
+          </span>
+        ) : (
+          <div className="flex justify-around">
+            <SaveOrDiscardBtn action="save" onClick={handleSave} />
+            <SaveOrDiscardBtn
+              action="discard"
+              onClick={() => console.log("Discarded")}
+            />
+          </div>
+        )}
       </div>
 
       <div className="mt-20">

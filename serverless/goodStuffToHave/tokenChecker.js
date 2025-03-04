@@ -15,7 +15,7 @@ const tokenChecker = async (event) => {
     // Check if Authorization header is present
     const token = event.headers["x-custom-authorization"];
     if (!token) {
-      return createResponse(400, "Authorization header is missing");
+      return createResponse(400, "x-custom-authorization header is missing");
     }
 
     console.log("Token: ", token);
