@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { mockData } from "@/mockData/projects";
 import SaveOrDiscardBtn from "@/components/ui/buttons/SaveOrDiscardBtn";
 import useProjectStore from "@/stores/project/useProjectStore";
 import EditImages from "@/components/ui/edit/EditImages";
