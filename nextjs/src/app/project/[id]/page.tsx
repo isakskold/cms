@@ -7,7 +7,7 @@ import { useAuthStore } from "@/stores/auth/useAuthStore";
 import EditImages from "@/components/ui/edit/EditImages";
 import EditSkills from "@/components/ui/edit/EditSkills";
 import EditString from "@/components/ui/edit/EditString";
-import createProject from "@/requests/project/createProject";
+import createProject from "@/requests/project/createOrUpdateProject";
 
 const ProjectPage = () => {
   const { id } = useParams();
