@@ -43,7 +43,7 @@ functions:
         - Arn
     events:
       - httpApi:
-          path: /project/delete
+          path: /project/{id}
           method: delete
 
   # User functions
