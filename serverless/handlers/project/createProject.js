@@ -6,6 +6,7 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const createResponse = require("../../goodStuffToHave/createResponse");
 const tokenChecker = require("../../goodStuffToHave/tokenChecker");
+const { projectSchema } = require("../../goodStuffToHave/joi/projectSchema");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
 
@@ -23,17 +24,20 @@ exports.handler = async (event) => {
       return createResponse(400, "Request body missing");
     }
 
-    console.log("Event body:", JSON.parse(event.body));
-
     const project = JSON.parse(event.body);
 
-    console.log("Project: ", project);
-
-    if (!email || !project) {
-      return createResponse(400, "Email and project data are required");
+    // Validate the project object with JOI
+    const { error } = projectSchema.validate(project);
+    if (error) {
+      return createResponse(
+        400,
+        `Invalid project data: ${error.details
+          .map((d) => d.message)
+          .join(", ")}`
+      );
     }
 
-    // Validate project data
+    // Destructure project after validation with joi
     const {
       id,
       lastEdited,
@@ -46,21 +50,6 @@ exports.handler = async (event) => {
       github,
       images,
     } = project;
-
-    if (
-      typeof id !== "string" ||
-      typeof lastEdited !== "string" ||
-      typeof name !== "string" ||
-      typeof logo !== "string" ||
-      typeof description !== "string" ||
-      typeof longDescription !== "string" ||
-      !Array.isArray(skills) ||
-      !Array.isArray(images) ||
-      typeof website !== "string" ||
-      typeof github !== "string"
-    ) {
-      return createResponse(400, "Invalid project data format");
-    }
 
     // Check if user exists
     const user = await client.send(
