@@ -35,6 +35,17 @@ functions:
           path: /project/create
           method: post
 
+  deleteProject:
+    handler: handlers/project/deleteProject.handler
+    role:
+      Fn::GetAtt:
+        - DynamoDbAccessRole
+        - Arn
+    events:
+      - httpApi:
+          path: /project/delete
+          method: delete
+
   # User functions
   signup:
     handler: handlers/user/signup.handler
