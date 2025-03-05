@@ -8,7 +8,7 @@ const SaveOrDiscardBtn: React.FC<Props> = ({ action, onClick }) => {
   const buttonColor =
     action === "save"
       ? "bg-green-600 hover:bg-green-700"
-      : "bg-red-600 hover:bg-red-700";
+      : "bg-yellow-600 hover:bg-yellow-700";
 
   return (
     <button

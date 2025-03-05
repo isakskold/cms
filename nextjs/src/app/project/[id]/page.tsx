@@ -8,6 +8,7 @@ import EditImages from "@/components/ui/edit/EditImages";
 import EditSkills from "@/components/ui/edit/EditSkills";
 import EditString from "@/components/ui/edit/EditString";
 import createProject from "@/requests/project/createOrUpdateProject";
+import DeleteProjectBtn from "./DeleteProjectBtn";
 
 const ProjectPage = () => {
   const { id } = useParams();
@@ -96,6 +97,7 @@ const ProjectPage = () => {
       </div>
 
       <div className="mt-20">
+        <DeleteProjectBtn projectId={projectId} />
         <p>
           <strong>Project ID:</strong> {project.id}
         </p>
