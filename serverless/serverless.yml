@@ -100,16 +100,30 @@ resources:
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
-                - Effect: Allow
+                - Effect: Allow # Add DynamoDB permissions
                   Action:
                     - dynamodb:PutItem
                     - dynamodb:GetItem
                     - dynamodb:UpdateItem
                     - dynamodb:DeleteItem
                   Resource: arn:aws:dynamodb:eu-north-1:586794470362:table/usersTable
+
                 - Effect: Allow # Add CloudWatch permissions
                   Action:
                     - logs:CreateLogGroup
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource: arn:aws:logs:eu-north-1:*:*
+
+                - Effect: Allow # Add VPC permissions for Lambda to interact with ElastiCache
+                  Action:
+                    - ec2:CreateNetworkInterface
+                    - ec2:DescribeNetworkInterfaces
+                    - ec2:DeleteNetworkInterface
+                  Resource: "*"
+
+                - Effect: Allow # Add ElastiCache permissions
+                  Action:
+                    - elasticache:DescribeCacheClusters
+                    - elasticache:Connect
+                  Resource: arn:aws:elasticache:eu-north-1:586794470362:serverlesscache:cms-cache
