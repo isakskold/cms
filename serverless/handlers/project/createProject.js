@@ -6,6 +6,7 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const createResponse = require("../../goodStuffToHave/createResponse");
 const tokenChecker = require("../../goodStuffToHave/tokenChecker");
+const clearCache = require("../../goodStuffToHave/clearCache");
 const { projectSchema } = require("../../goodStuffToHave/joi/projectSchema");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
@@ -102,6 +103,7 @@ exports.handler = async (event) => {
       };
 
       await client.send(new UpdateItemCommand(updateParams));
+      await clearCache(email);
 
       return createResponse(200, "Project updated successfully", {
         email,
@@ -137,6 +139,7 @@ exports.handler = async (event) => {
       };
 
       await client.send(new UpdateItemCommand(updateParams));
+      await clearCache(email);
 
       return createResponse(201, "Project added successfully to user", {
         email,

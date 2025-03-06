@@ -15,11 +15,12 @@ const tokenChecker = async (event) => {
     // Check if Authorization header is present
     const token = event.headers["x-custom-authorization"];
 
-    console.log("Token: ", token);
-
     if (!token) {
       throw new Error("Authorization header is missing");
     }
+
+    // Log the query being sent to DynamoDB
+    console.log("Querying DynamoDB with token: ", token);
 
     // Query the DynamoDB to check if the user exists
     const user = await client.send(
@@ -29,10 +30,15 @@ const tokenChecker = async (event) => {
       })
     );
 
+    // Log the result from DynamoDB
+    console.log("DynamoDB response: ", user);
+
     // If the user doesn't exist, return an error
     if (!user.Item) {
       throw new Error("Invalid or expired token");
     }
+
+    console.log("User verified");
 
     // If valid, return the email (or any relevant user info if needed)
     return token;
