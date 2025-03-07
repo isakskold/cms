@@ -6,7 +6,7 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const createResponse = require("../../goodStuffToHave/createResponse");
 const tokenChecker = require("../../goodStuffToHave/tokenChecker");
-const clearCache = require("../../goodStuffToHave/clearCache");
+const clearCache = require("../../goodStuffToHave/cache/clearCache");
 const { projectSchema } = require("../../goodStuffToHave/joi/projectSchema");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });

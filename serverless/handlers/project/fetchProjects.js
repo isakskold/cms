@@ -1,7 +1,7 @@
 const { DynamoDBClient, GetItemCommand } = require("@aws-sdk/client-dynamodb");
 const createResponse = require("../../goodStuffToHave/createResponse");
 const tokenChecker = require("../../goodStuffToHave/tokenChecker"); // Import tokenChecker
-const { connectRedis } = require("../../goodStuffToHave/redisCache");
+const { connectRedis } = require("../../goodStuffToHave/cache/redisCache");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
 
