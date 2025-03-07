@@ -1,6 +1,13 @@
 # Serverless project
 
-This serverless directory defines cloud functions used in AWS.
+This serverless directory defines cloud functions and configurations for the AWS environment. Following services are used in this project:
+* **Lambda** - Cloud functions that allow you to run backend code without provisioning or managing servers. 
+* **IAM** - Identity and Access Management. Controls access to AWS resources by defining permissions and roles for users, services, and applications.
+* **DynamoDB** - A fully managed NoSQL database service that provides fast and predictable performance.
+* **API Gateway** - A managed service for creating, publishing, maintaining, monitoring, and securing APIs. 
+* **CloudWatch** -  A monitoring and logging service for AWS resources and applications.
+* **Cognito** - A service for managing user authentication and authorization.
+* **ElastiCache** - A fully managed in-memory cache service that helps reduce the load on databases by caching frequently accessed data, improving application performance and scalability. I am using Redis as engine.
 
 ## Handlers
 
