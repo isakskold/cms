@@ -51,7 +51,7 @@ functions:
     handler: handlers/user/signup.handler
     role:
       Fn::GetAtt:
-        - DynamoDbAccessRole
+        - SignupRole
         - Arn
     events:
       - httpApi:
@@ -100,7 +100,7 @@ resources:
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
-                - Effect: Allow # Add DynamoDB permissions
+                - Effect: Allow # DynamoDB permissions
                   Action:
                     - dynamodb:PutItem
                     - dynamodb:GetItem
@@ -108,22 +108,81 @@ resources:
                     - dynamodb:DeleteItem
                   Resource: arn:aws:dynamodb:eu-north-1:586794470362:table/usersTable
 
-                - Effect: Allow # Add CloudWatch permissions
+                - Effect: Allow # CloudWatch permissions
                   Action:
                     - logs:CreateLogGroup
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource: arn:aws:logs:eu-north-1:*:*
 
-                - Effect: Allow # Add VPC permissions for Lambda to interact with ElastiCache
+                - Effect: Allow # VPC permissions for Lambda to interact with ElastiCache
                   Action:
                     - ec2:CreateNetworkInterface
                     - ec2:DescribeNetworkInterfaces
                     - ec2:DeleteNetworkInterface
                   Resource: "*"
 
-                - Effect: Allow # Add ElastiCache permissions
+                - Effect: Allow # ElastiCache permissions
                   Action:
                     - elasticache:DescribeCacheClusters
                     - elasticache:Connect
                   Resource: arn:aws:elasticache:eu-north-1:586794470362:serverlesscache:cms-cache
+
+    # Cognito and DynamoDB Access Role for signup
+    SignupRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: sts:AssumeRole
+              Principal:
+                Service: lambda.amazonaws.com
+        Policies:
+          - PolicyName: SignupAccessPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - cognito-idp:SignUp
+                    - cognito-idp:ListUsers
+                  Resource: arn:aws:cognito-idp:eu-north-1:586794470362:userpool/eu-north-1_EqPhIcyJw
+                - Effect: Allow
+                  Action:
+                    - dynamodb:PutItem
+                    - dynamodb:GetItem
+                    - dynamodb:UpdateItem
+                    - dynamodb:DeleteItem
+                  Resource: arn:aws:dynamodb:eu-north-1:586794470362:table/usersTable
+                # CloudWatch Logs permissions
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: arn:aws:logs:eu-north-1:586794470362:log-group:/aws/lambda/*
+
+    # Cognito Access Role
+    CognitoAccessRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: sts:AssumeRole
+              Principal:
+                Service: lambda.amazonaws.com
+        Policies:
+          - PolicyName: CognitoAccessPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - cognito-idp:SignUp
+                    - cognito-idp:ListUsers
+                    # Add other Cognito actions here
+                  Resource: arn:aws:cognito-idp:eu-north-1:586794470362:userpool/eu-north-1_EqPhIcyJw
