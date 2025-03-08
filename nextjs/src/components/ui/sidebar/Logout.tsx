@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/auth/useAuthStore";
 import useSidebarStore from "@/stores/useSidebarStore";
 
 const Logout: React.FC = () => {
-  const { setEmail, isLoggedIn } = useAuthStore();
+  const { setEmail, setTokenData, isLoggedIn } = useAuthStore();
   const router = useRouter();
   const { setSidebar } = useSidebarStore();
 
@@ -17,6 +17,7 @@ const Logout: React.FC = () => {
   const handleLogout = () => {
     console.log("Logging out user...");
     setEmail(null);
+    setTokenData(null);
     router.push("/");
     setSidebar(false);
   };
