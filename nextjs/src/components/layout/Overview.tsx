@@ -11,13 +11,16 @@ interface Props {}
 const Overview: React.FC<Props> = () => {
   const router = useRouter();
   const { projects, setProjects } = useProjectStore();
-  const { email } = useAuthStore();
+  const { access_token } = useAuthStore().tokenData || {};
+  const { isHydrated } = useAuthStore();
 
   useEffect(() => {
-    if (email) {
+    if (!isHydrated) return;
+
+    if (projects.length === 0) {
       (async () => {
         try {
-          const response = await fetchProjects(email);
+          const response = await fetchProjects(access_token as string);
           setProjects(response);
           console.log("Initialized store with fetched data");
         } catch (error) {
@@ -25,7 +28,7 @@ const Overview: React.FC<Props> = () => {
         }
       })();
     }
-  }, []);
+  }, [isHydrated, projects.length, access_token, setProjects]);
 
   return (
     <div className="overflow-x-auto">

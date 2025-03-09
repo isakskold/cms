@@ -17,6 +17,8 @@ interface AuthStore {
   setEmail: (email: string | null) => void;
 
   isLoggedIn: boolean;
+
+  isHydrated: boolean;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -34,9 +36,16 @@ export const useAuthStore = create<AuthStore>()(
         set({ tokenData });
         set({ isLoggedIn: tokenData !== null });
       },
+
+      isHydrated: false,
     }),
     {
       name: "auth-storage", // Key used in localStorage
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.isHydrated = true;
+        }
+      },
       storage: createJSONStorage(() => localStorage), // Use localStorage for persistence
       partialize: (state) => ({
         email: state.email,
