@@ -8,7 +8,7 @@ const createProject = async (token: string, project: Project) => {
   try {
     const response = await axios.post(url, project, {
       headers: {
-        "x-custom-authorization": token, // Just send the token directly without the "Bearer" prefix
+        Authorization: `Bearer ${token}`,
       },
     });
 

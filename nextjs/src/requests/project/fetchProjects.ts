@@ -7,7 +7,7 @@ const fetchProjects = async (token: string) => {
   try {
     const response = await axios.get(url, {
       headers: {
-        "x-custom-authorization": token, // Just send the token directly without the "Bearer" prefix
+        Authorization: `Bearer ${token}`,
       },
     });
     console.log("Projects: ", response.data.data.projects);

@@ -16,7 +16,8 @@ const ProjectPage = () => {
   const projectId = String(id);
   const { projects, addProject, updateProject, inputProject, setInputProject } =
     useProjectStore();
-  const { email } = useAuthStore();
+  const { access_token } = useAuthStore().tokenData || {};
+
   const [successMsg, setSuccessMsg] = useState<string | null>();
   const [success, setSuccess] = useState<boolean>(false);
 
@@ -46,10 +47,8 @@ const ProjectPage = () => {
         // Update the project in the store
         updateProject(newProject);
 
-        console.log("email from useAuthStore:", email);
-
         // Create the project via the API
-        await createProject(email as string, newProject);
+        await createProject(access_token as string, newProject);
         setSuccessMsg("Project saved...");
         setSuccess(true);
 

@@ -6,7 +6,7 @@ const deleteProject = async (token: string, projectId: string) => {
   try {
     const response = await axios.delete(url, {
       headers: {
-        "x-custom-authorization": token,
+        Authorization: `Bearer ${token}`,
       },
     });
 
