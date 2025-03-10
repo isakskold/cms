@@ -6,7 +6,6 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const createResponse = require("../../goodStuffToHave/createResponse");
 const tokenChecker = require("../../goodStuffToHave/tokenChecker");
-const clearCache = require("../../goodStuffToHave/cache/clearCache");
 const { projectSchema } = require("../../goodStuffToHave/joi/projectSchema");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
@@ -14,10 +13,7 @@ const client = new DynamoDBClient({ region: "eu-north-1" });
 exports.handler = async (event) => {
   try {
     // Call the tokenChecker function to validate the token
-    const tokenOrError = await tokenChecker(event);
-
-    // Proceed with the logic assuming tokenOrError contains the valid email
-    const email = tokenOrError;
+    const email = await tokenChecker(event);
 
     console.log("email: ", email);
 
@@ -103,7 +99,6 @@ exports.handler = async (event) => {
       };
 
       await client.send(new UpdateItemCommand(updateParams));
-      await clearCache(email);
 
       return createResponse(200, "Project updated successfully", {
         email,
@@ -139,7 +134,6 @@ exports.handler = async (event) => {
       };
 
       await client.send(new UpdateItemCommand(updateParams));
-      await clearCache(email);
 
       return createResponse(201, "Project added successfully to user", {
         email,
