@@ -14,18 +14,14 @@ This is a mono repo. The `nextjs/` directory is a Next.js frontend application, 
 
 coming soon...
 
-## Zustand and cache for user data
+## Zustand as "cache"
 
-I have spent time setting up an efficient way of retrieving user data that does not need to send a GET request to DynamoDB every time the data is needed. There are 3 layers to this.
+In this project I have been researching how to use a cache to reduce reads on the database. I started out by using ElastiCache in AWS. I liked it. I had lots of freedome to customize the cache logic within my lambda functions. The drawback however, I needed to keep the lambda handlers inside a VPC that held the ElastiCache instance. This cuts of internet access for my lambda handlers, and that did not work for me. My lambda functions need internet access, for example to connect to cognito.
 
-- Zustand
-- Cache (DAX)
-- DynamoDB
+I switched into DAX, which is the standard cache service for DynamoDB. Before I had started implementing it I realised, why not just use zustand?
 
-In the client we store user data in Zustand (which is a state management tool). Zustand uses the `persist` middleware, which syncs the data to localstorage. Syncing the data to local storage means that the state will persist across page reloads.
+In this project, users will only fetch their own data, and no one else can modify their data. This allows me to read from the zustand state if it exists, instead of reading from the database. Since the users data are not that big, this setup should work and act as a "cache". I realised it might be better to just scrap using a cache service, while taking advantage of Zustand.
 
-Instead of making the http request, we try to fetch from the zustand state. If the zustand state is null, then make the http request. The Zustand state will be null when a user has logged out for example.
+The client will only read from DynamoDB if the user data does not exist. Logging out is an action that resets the user data. So when a user logs in, it will fetch from DynamoDB, but then it will fetch directly from Zustand, until a new login session begins.
 
-When making POST request to add project or update project we also run a zustand function that adds the project to the state too. This way we make sure that any changes that are being sent to the database is also updated clientside in the Zustand store.
-
-When a http fetch has to be made, it will go to the lambda handler. This handler will use DAX, which is a cache service for DynamoDB. DAX automatically handles the caching logic. Meaning that actual database reads will be very minimal.
+Any updates to DynamoDB will also be reflected directly in Zustand. This makes sure the database and zustand is in sync, since I perform the same operations on both. That removes the need to fetch more than once per login session.
