@@ -5,6 +5,7 @@ import { Project } from "@/types/data/project";
 interface ProjectStore {
   projects: Project[];
   inputProject: Project | null; // Not persisted
+  isHydrated: boolean;
   setProjects: (projects: Project[]) => void;
   addProject: (project: Project) => void;
   updateProject: (updatedProject: Project) => void;
@@ -17,6 +18,7 @@ const useProjectStore = create<ProjectStore>()(
     (set) => ({
       projects: [],
       inputProject: null,
+      isHydrated: false,
       setProjects: (projects) => set({ projects }),
       addProject: (project) =>
         set((state) => ({ projects: [...state.projects, project] })),
@@ -35,6 +37,11 @@ const useProjectStore = create<ProjectStore>()(
     {
       name: "projects-store", // Key used in localStorage
       partialize: (state) => ({ projects: state.projects }), // Only persist projects
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.isHydrated = true; // Set isHydrated to true after rehydration
+        }
+      },
     }
   )
 );

@@ -1,7 +1,5 @@
 "use client";
 
-import { useAuthStore } from "@/stores/auth/useAuthStore";
-import { usePathname } from "next/navigation";
 import useSidebarStore from "@/stores/useSidebarStore";
 import Logo from "../ui/sidebar/Logo";
 import Option from "../ui/sidebar/Option";
@@ -13,8 +11,6 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = () => {
-  const { isLoggedIn } = useAuthStore();
-  const pathname = usePathname();
   const options = ["Dashboard", "Settings", "Help"];
   const { isOpen } = useSidebarStore();
 
@@ -22,26 +18,22 @@ const Sidebar: React.FC<Props> = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed flex flex-col items-center w-full h-full bg-violet-900">
-      <div className="flex justify-between w-full px-5">
-        <Logo />
+    <div className="fixed flex flex-col overflow-auto items-center w-full h-full bg-blue-900">
+      <div className="flex justify-end w-full px-5">
         <Close />
       </div>
 
-      <div className="flex flex-col my-auto gap-20 w-full">
+      <div
+        className="flex flex-col w-full"
+        style={{
+          marginTop: "max(10vh, 50px)",
+          marginBottom: "max(10vh, 50px)",
+        }}
+      >
         {options.map((option, index) => {
           const route = `/${option.toLowerCase()}`;
-          const isActive = pathname === route; // Check if the current route matches the option
 
-          return (
-            <Option
-              key={index}
-              label={option}
-              link={route}
-              // Apply active class for selected option
-              className={isActive ? " text-white" : ""}
-            />
-          );
+          return <Option key={index} label={option} link={route} />;
         })}
       </div>
 

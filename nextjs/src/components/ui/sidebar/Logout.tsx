@@ -28,7 +28,7 @@ const Logout: React.FC = () => {
   return (
     <button
       onClick={handleLogout}
-      className="p-2 text-slate-100 tracking-widest text-lg font-bold bg-purple-950 rounded-lg shadow-lg shadow-red-600"
+      className=" transition-shadow duration-300 ease-in-out p-2 text-slate-100 tracking-widest text-lg font-bold bg-purple-950 rounded-lg shadow-lg hover:shadow-red-600"
     >
       Log-out
     </button>

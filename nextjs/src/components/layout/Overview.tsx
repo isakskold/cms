@@ -6,6 +6,7 @@ import useProjectStore from "@/stores/project/useProjectStore";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import fetchProjects from "@/requests/project/fetchProjects";
 import Loading from "../utils/loading";
+import formatDateTime from "../utils/formatTime";
 
 interface Props {}
 
@@ -42,12 +43,18 @@ const Overview: React.FC<Props> = () => {
       {loading ? (
         <Loading text="Loading projects..." />
       ) : (
-        <table className="w-full border-collapse border border-gray-300">
+        <table className="w-full border-collapse border border-sky-700 bg-sky-200">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-2">ID</th>
-              <th className="border p-2">Project Name</th>
-              <th className="border p-2">Last edited</th>
+            <tr className="bg-sky-700 text-white">
+              <th className="border border-sky-700 p-2 w-1/3 tracking-widest">
+                Project Name
+              </th>
+              <th className="border border-sky-700 p-2 w-1/3 tracking-widest">
+                Description
+              </th>
+              <th className="border border-sky-700 p-2 w-1/3 tracking-widest">
+                Last edited
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -55,11 +62,19 @@ const Overview: React.FC<Props> = () => {
               <tr
                 key={project.id}
                 onClick={() => router.push(`/project/${project.id}`)}
-                className="hover:bg-gray-50 cursor-pointer"
+                className="hover:bg-sky-400 cursor-pointer h-8"
               >
-                <td className="border p-2">{project.id}</td>
-                <td className="border p-2">{project.name}</td>
-                <td className="border p-2">{project.lastEdited || "Never"}</td>
+                <td className="border border-black p-2 w-1/3 text-center">
+                  {project.name}
+                </td>
+                <td className="border border-black p-2 w-1/3 text-center">
+                  {project.description}
+                </td>
+                <td className="border border-black p-2 w-1/3 text-center">
+                  {project.lastEdited
+                    ? formatDateTime(project.lastEdited)
+                    : "Never"}
+                </td>
               </tr>
             ))}
           </tbody>
