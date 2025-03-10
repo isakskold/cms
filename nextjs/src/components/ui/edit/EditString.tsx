@@ -1,8 +1,7 @@
 "use client";
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { useParams } from "next/navigation";
 import useProjectStore from "@/stores/project/useProjectStore";
-import { Project } from "@/types/data/project";
 
 interface Props {
   label:
@@ -26,18 +25,40 @@ const EditString: React.FC<Props> = ({ label }) => {
   const inputProject = useProjectStore((state) => state.inputProject);
   const setInputProject = useProjectStore((state) => state.setInputProject);
 
-  // Use the temporary state if available; otherwise, fall back to the persistent project.
+  // Initialize inputProject with default values if it's a new project (id not found in store).
+  useEffect(() => {
+    if (!project) {
+      console.log("Setting up the project to create");
+
+      // Initialize inputProject with default values for a new project
+      setInputProject({
+        id: id as string,
+        lastEdited: new Date().toISOString(),
+        name: "",
+        logo: "",
+        description: "",
+        longDescription: "",
+        skills: [],
+        website: "",
+        github: "",
+        images: [],
+      });
+    } else if (project) {
+      // If project exists, update inputProject with the project data
+      setInputProject(project);
+    }
+  }, []);
+
+  // Determine the value for the input field:
+  // - If inputProject exists, use that.
+  // - If inputProject doesn't exist but project does, use the persistent project.
+  // - Otherwise, fall back to an empty string.
   const value =
     inputProject && label in inputProject
       ? inputProject[label]
-      : project
+      : project && label in project
       ? project[label]
       : "";
-
-  // Log the value of longDescription to see what it looks like.
-  if (label === "longDescription") {
-    console.log("longDescription value:", value);
-  }
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

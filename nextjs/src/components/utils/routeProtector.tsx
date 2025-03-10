@@ -3,24 +3,19 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import useProjectStore from "@/stores/project/useProjectStore";
 
 const RouteProtector: React.FC = () => {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, isHydrated } = useAuthStore();
+  const { setProjects } = useProjectStore();
   const router = useRouter();
   const pathname = usePathname();
 
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  // Ensure Zustand has rehydrated before running the effect
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-
   useEffect(() => {
     if (isHydrated) {
-      console.log("isLoggedIn state after hydration:", isLoggedIn);
       if (!isLoggedIn) {
         router.replace("/");
+        setProjects([]);
       }
     }
   }, [isHydrated, isLoggedIn, router, pathname]);
