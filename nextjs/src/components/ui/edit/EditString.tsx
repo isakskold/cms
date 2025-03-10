@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import useProjectStore from "@/stores/project/useProjectStore";
 
 interface Props {
+  className?: string;
   label:
     | "name"
     | "logo"
@@ -72,20 +73,27 @@ const EditString: React.FC<Props> = ({ label }) => {
     }
   };
 
+  const formatLabel = (label: string) => {
+    return label
+      .replace(/([A-Z])/g, " $1") // Insert space before uppercase letters
+      .replace(/^./, (str) => str.toUpperCase()) // Capitalize the first letter
+      .trim();
+  };
+
   return (
     <div className="flex flex-col gap-1">
-      <label className="font-semibold">{label}</label>
+      <label className="font-semibold">{formatLabel(label)}</label>
       <div>
         {label === "longDescription" ? (
           <textarea
-            className="p-1 rounded-xl field-sizing-content min-w-24 max-w-full"
+            className="p-1 rounded-xl field-sizing-content w-full min-h-48 "
             value={value}
             onChange={handleChange}
             rows={5} // Adjust rows as needed
           />
         ) : (
           <input
-            className="p-1 rounded-xl field-sizing-content min-w-24 max-w-full"
+            className="p-1 overflow-auto rounded-xl field-sizing-content min-w-20 max-w-[190px] lg:max-w-[260px]"
             type="text"
             value={value}
             onChange={handleChange}

@@ -5,3 +5,34 @@
 * {
   box-sizing: border-box;
 }
+
+th,
+td,
+span,
+p,
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+textarea {
+  letter-spacing: 0.05em;
+}
+
+button {
+  font-weight: 700;
+}
+
+th {
+  font-size: 18px;
+}
+
+td {
+  font-weight: 500;
+}
+
+label,
+p {
+  color: white;
+}

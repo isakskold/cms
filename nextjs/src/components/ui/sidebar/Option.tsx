@@ -15,11 +15,14 @@ const Option: React.FC<Props> = ({ label, link, className }) => {
   };
 
   return (
-    <div onClick={handleClick} className="w-full">
+    <div
+      onClick={handleClick}
+      className="transition-colors transition-text duration-300 ease-in-out w-full hover:bg-sky-950 hover:shadow-lg"
+    >
       <Link
         href={link}
         passHref
-        className={`${className} block text-center font-semibold text-2xl`}
+        className={`${className} py-5 block text-center text-white font-semibold text-2xl`}
       >
         {label}
       </Link>
