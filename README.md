@@ -16,7 +16,7 @@ coming soon...
 
 ## Zustand as "cache"
 
-In this project I have been researching how to use a cache to reduce reads on the database. I started out by using ElastiCache in AWS. I liked it. I had lots of freedome to customize the cache logic within my lambda functions. The drawback however, I needed to keep the lambda handlers inside a VPC that held the ElastiCache instance. This cuts of internet access for my lambda handlers, and that did not work for me. My lambda functions need internet access, for example to connect to cognito.
+In this project I have been researching how to use a cache to reduce reads on the database. I started out by using ElastiCache in AWS. I liked it. I had lots of freedoom to customize the cache logic within my lambda functions. The drawback however, I needed to keep the lambda handlers inside a VPC that held the ElastiCache instance. This cuts of internet access for my lambda handlers, and that did not work for me. My lambda functions need internet access, for example to connect to cognito.
 
 I switched into DAX, which is the standard cache service for DynamoDB. Before I had started implementing it I realised, why not just use zustand?
 
