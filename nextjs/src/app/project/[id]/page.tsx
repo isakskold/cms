@@ -14,20 +14,12 @@ const ProjectPage = () => {
   const { id } = useParams();
   const router = useRouter();
   const projectId = String(id);
-  const { projects, addProject, updateProject, inputProject, setInputProject } =
+  const { projects, updateProject, inputProject, addProject } =
     useProjectStore();
-  const { email } = useAuthStore();
+  const { access_token } = useAuthStore().tokenData || {};
+
   const [successMsg, setSuccessMsg] = useState<string | null>();
   const [success, setSuccess] = useState<boolean>(false);
-
-  useEffect(() => {
-    setInputProject(null); // Reset input state when switching projects
-    console.log("Reset input state", inputProject);
-  }, [projectId]); // Runs when projectId changes
-
-  useEffect(() => {
-    console.log("Updated inputProject:", inputProject);
-  }, [inputProject]); // Logs whenever inputProject changes
 
   // Get the current project from the store
   const project = projects.find((p) => p.id === projectId);
@@ -43,17 +35,22 @@ const ProjectPage = () => {
           lastEdited: new Date().toISOString(),
         };
 
-        // Update the project in the store
-        updateProject(newProject);
-
-        console.log("email from useAuthStore:", email);
-
         // Create the project via the API
-        await createProject(email as string, newProject);
+        await createProject(access_token as string, newProject);
         setSuccessMsg("Project saved...");
         setSuccess(true);
 
-        console.log("Project saved successfully.");
+        if (project) {
+          // If the project exists in the store, update it
+          updateProject(newProject);
+          console.log("Project updated successfully.");
+        } else {
+          // If the project does not exist in the store, add it
+          addProject(newProject);
+          console.log("Project added successfully.");
+        }
+
+        console.log("Project saved successfully. Current projects: ", projects);
 
         // Navigate to /dashboard after 2 seconds
         setTimeout(() => {
@@ -64,8 +61,6 @@ const ProjectPage = () => {
       console.error("Error saving project:", error);
     }
   };
-
-  if (!project) return <p>Loading...</p>;
 
   return (
     <div className="flex flex-col justify-between flex-1 p-4">
@@ -99,10 +94,10 @@ const ProjectPage = () => {
       <div className="mt-20">
         <DeleteProjectBtn projectId={projectId} />
         <p>
-          <strong>Project ID:</strong> {project.id}
+          <strong>Project ID:</strong> {projectId}
         </p>
         <p>
-          <strong>Last Edited:</strong> {project.lastEdited || "Never"}
+          <strong>Last Edited:</strong> {project?.lastEdited || "Never"}
         </p>
       </div>
     </div>

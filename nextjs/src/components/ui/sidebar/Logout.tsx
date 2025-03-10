@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import useSidebarStore from "@/stores/useSidebarStore";
 
 const Logout: React.FC = () => {
-  const { setEmail, isLoggedIn } = useAuthStore();
-  const router = useRouter();
+  const { setEmail, setTokenData, isLoggedIn } = useAuthStore();
   const { setSidebar } = useSidebarStore();
 
   useEffect(() => {
@@ -17,7 +15,13 @@ const Logout: React.FC = () => {
   const handleLogout = () => {
     console.log("Logging out user...");
     setEmail(null);
-    router.push("/");
+    setTokenData(null);
+    const cognitoLogoutUrl = `${
+      process.env.NEXT_PUBLIC_COGNITO_DOMAIN
+    }/logout?client_id=${
+      process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
+    }&logout_uri=${encodeURIComponent("http://localhost:3000")}`;
+    window.location.href = cognitoLogoutUrl;
     setSidebar(false);
   };
 

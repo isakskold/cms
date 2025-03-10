@@ -10,13 +10,13 @@ interface Props {
 }
 
 const DeleteProjectBtn: React.FC<Props> = ({ projectId }) => {
-  const { email } = useAuthStore();
+  const { access_token } = useAuthStore().tokenData || {};
   const { removeProject } = useProjectStore();
   const router = useRouter();
 
   const handleDeletion = async () => {
     try {
-      await deleteProject(email as string, projectId);
+      await deleteProject(access_token as string, projectId);
       removeProject(projectId); // Remove project from local storage too
 
       router.push("/dashboard");

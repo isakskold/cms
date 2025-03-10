@@ -5,15 +5,13 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const createResponse = require("../../goodStuffToHave/createResponse");
 const tokenChecker = require("../../goodStuffToHave/tokenChecker");
-const clearCache = require("../../goodStuffToHave/clearCache");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
 
 exports.handler = async (event) => {
   try {
     // Call the tokenChecker function to validate the token
-    const tokenOrError = await tokenChecker(event);
-    const email = tokenOrError;
+    const email = await tokenChecker(event);
 
     const projectId = event.pathParameters.id;
 
@@ -56,7 +54,6 @@ exports.handler = async (event) => {
       return createResponse(404, "Project not found");
     }
 
-    clearCache(email);
     return createResponse(200, "Project deletion was successfully");
   } catch (error) {
     console.error("Error in deleting project:", error);

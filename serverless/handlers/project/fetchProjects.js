@@ -1,7 +1,6 @@
 const { DynamoDBClient, GetItemCommand } = require("@aws-sdk/client-dynamodb");
 const createResponse = require("../../goodStuffToHave/createResponse");
 const tokenChecker = require("../../goodStuffToHave/tokenChecker"); // Import tokenChecker
-const { connectRedis } = require("../../goodStuffToHave/redisCache");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
 
@@ -10,19 +9,7 @@ exports.handler = async (event) => {
     // Call the tokenChecker function to validate the token
     const email = await tokenChecker(event);
 
-    // Get Redis client instance
-    const redis = await connectRedis();
-
-    // Try to get user data from Redis cache
-    const cachedUser = await redis.get(`user:${email}`);
-
-    if (cachedUser) {
-      // If data is found in the cache, return it immediately
-      return createResponse(200, "User's projects retrieved from cache", {
-        email,
-        projects: JSON.parse(cachedUser).projects, // Parse the cached JSON data
-      });
-    }
+    console.log("email: ", email);
 
     // Check if user exists
     const user = await client.send(
@@ -31,6 +18,8 @@ exports.handler = async (event) => {
         Key: { email: { S: email } },
       })
     );
+
+    console.log("Cheked user with email: ", user);
 
     if (!user.Item) {
       return createResponse(404, "User not found");
@@ -54,12 +43,6 @@ exports.handler = async (event) => {
         images: proj.images.L.map((image) => image.S), // Convert image list
       };
     });
-
-    // Cache the result in Redis for future requests
-    await redis.set(
-      `user:${email}`,
-      JSON.stringify({ email, projects: formattedProjects })
-    );
 
     return createResponse(200, "User's projects retrieved successfully", {
       email,
