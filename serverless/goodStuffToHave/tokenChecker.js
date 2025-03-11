@@ -25,6 +25,13 @@ const tokenChecker = async (event) => {
     // Decode the token (using 'jwt-decode' package)
     const decoded = jwtDecode(token);
 
+    // Check if token is expired
+    if (decoded.exp * 1000 < Date.now()) {
+      return createResponse(401, {
+        message: "Access token expired, refresh required",
+      });
+    }
+
     // Extract the sub (user ID) from the decoded token
     const userId = decoded.sub; // The "sub" field in the token is the user ID
 

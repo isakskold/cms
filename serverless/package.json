@@ -12,6 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.758.0",
     "aws-sdk": "^2.1692.0",
+    "dotenv": "^16.4.7",
     "ioredis": "^5.6.0",
     "joi": "^17.13.3",
     "jwt-decode": "^4.0.0"
