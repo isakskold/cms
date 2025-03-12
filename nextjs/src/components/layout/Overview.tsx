@@ -38,23 +38,22 @@ const Overview: React.FC<Props> = () => {
     }
   }, [isHydrated, projects.length, access_token, setProjects]);
 
+  const tableStyles = {
+    th: "border border-sky-700 py-2 px-8 w-1/3 tracking-widest",
+    td: "border border-black py-2 px-8 w-1/3 text-center whitespace-nowrap overflow-hidden text-ellipsis",
+  };
+
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto rounded-2xl">
       {loading ? (
         <Loading text="Loading projects..." />
       ) : (
-        <table className="w-full border-collapse border border-sky-700 bg-sky-200">
-          <thead>
+        <table className="w-full min-w-[680px] table-fixed border-collapse border border-sky-700 bg-sky-200">
+          <thead className="">
             <tr className="bg-sky-700 text-white">
-              <th className="border border-sky-700 p-2 w-1/3 tracking-widest">
-                Project Name
-              </th>
-              <th className="border border-sky-700 p-2 w-1/3 tracking-widest">
-                Description
-              </th>
-              <th className="border border-sky-700 p-2 w-1/3 tracking-widest">
-                Last edited
-              </th>
+              <th className={tableStyles.th}>Project Name</th>
+              <th className={tableStyles.th}>Description</th>
+              <th className={tableStyles.th}>Last edited</th>
             </tr>
           </thead>
           <tbody>
@@ -64,13 +63,9 @@ const Overview: React.FC<Props> = () => {
                 onClick={() => router.push(`/project/${project.id}`)}
                 className="hover:bg-sky-400 cursor-pointer h-8"
               >
-                <td className="border border-black p-2 w-1/3 text-center">
-                  {project.name}
-                </td>
-                <td className="border border-black p-2 w-1/3 text-center">
-                  {project.description}
-                </td>
-                <td className="border border-black p-2 w-1/3 text-center">
+                <td className={tableStyles.td}>{project.name}</td>
+                <td className={tableStyles.td}>{project.description}</td>
+                <td className={tableStyles.td}>
                   {project.lastEdited
                     ? formatDateTime(project.lastEdited)
                     : "Never"}

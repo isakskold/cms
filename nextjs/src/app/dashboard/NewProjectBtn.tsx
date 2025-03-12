@@ -18,7 +18,7 @@ const NewProjectBtn: React.FC<Props> = () => {
   return (
     <button
       onClick={handleNewProjectClick}
-      className="w-fi text-white bg-green-500 hover:bg-green-700 rounded-md p-1 my-3 mr-auto"
+      className="w-fit text-white bg-green-500 hover:bg-green-700 rounded-md p-2 my-14 mr-auto tracking-widest"
     >
       New project
     </button>
