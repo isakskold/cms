@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import useProjectStore from "../project/useProjectStore";
 
 interface CognitoData {
   access_token: string;
@@ -19,6 +20,8 @@ interface AuthStore {
   isLoggedIn: boolean;
 
   isHydrated: boolean;
+
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -38,6 +41,14 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       isHydrated: false,
+
+      logout: () => {
+        set({
+          tokenData: null,
+          isLoggedIn: false,
+        });
+        useProjectStore.getState().setProjects([]); // Reset projects to an empty array
+      },
     }),
     {
       name: "auth-storage", // Key used in localStorage

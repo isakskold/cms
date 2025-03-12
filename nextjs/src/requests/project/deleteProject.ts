@@ -1,10 +1,8 @@
-import axios from "axios";
+import apiClient from "../interceptor/apiClient";
 
 const deleteProject = async (token: string, projectId: string) => {
-  const url = `https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/project/${projectId}`;
-
   try {
-    const response = await axios.delete(url, {
+    const response = await apiClient.delete(`/project/${projectId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

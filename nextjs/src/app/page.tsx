@@ -1,16 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const { isLoggedIn } = useAuthStore();
+  const router = useRouter();
+
+  // Redirect if logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/dashboard");
+    }
+  }, [isLoggedIn, router]);
 
   // Function to handle the redirection to Cognito Hosted UI
   const redirectToCognito = () => {
     setLoading(true);
 
-    const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID; // Cognito app client ID
-    const responseType = "code"; // Or "token" if you're using Implicit flow
     const cognitoHostedUiUrl = `${process.env.NEXT_PUBLIC_COGNITO_DOMAIN}/login?client_id=${process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID}&redirect_uri=http://localhost:3000/callback&response_type=code&scope=email+openid+phone`;
     window.location.href = cognitoHostedUiUrl; // Redirect to Cognito Hosted UI
   };

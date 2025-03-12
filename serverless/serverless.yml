@@ -69,6 +69,17 @@ functions:
           path: /user/signin
           method: post
 
+  refreshToken:
+    handler: handlers/user/refreshToken.handler
+    role:
+      Fn::GetAtt:
+        - CognitoAccessRole
+        - Arn
+    events:
+      - httpApi:
+          path: /user/refreshToken
+          method: post
+
 resources:
   Resources:
     # DynamoDB Table
@@ -179,5 +190,12 @@ resources:
                   Action:
                     - cognito-idp:SignUp
                     - cognito-idp:ListUsers
-                    # Add other Cognito actions here
+                    - cognito-idp:InitiateAuth
                   Resource: arn:aws:cognito-idp:eu-north-1:586794470362:userpool/eu-north-1_EqPhIcyJw
+                # CloudWatch Logs permissions
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: arn:aws:logs:eu-north-1:*:*
