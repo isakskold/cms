@@ -1,14 +1,13 @@
-import axios from "axios";
+import apiClient from "../interceptor/apiClient";
 import { Project } from "@/types/data/project";
 
 const createProject = async (token: string, project: Project) => {
-  const url =
-    "https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/project/create";
-
   try {
-    const response = await axios.post(url, project, {
+    console.log("Creating project with token: ", token);
+
+    const response = await apiClient.post("/project/create", project, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`, // Use the token in the Authorization header
       },
     });
 
@@ -22,7 +21,7 @@ const createProject = async (token: string, project: Project) => {
     }
 
     // Throw a general error with a fallback message
-    throw new Error("An error occurred during sign in");
+    throw new Error("An error occurred during project creation");
   }
 };
 

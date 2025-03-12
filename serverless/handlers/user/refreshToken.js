@@ -41,6 +41,15 @@ module.exports.handler = async (event) => {
     });
   } catch (error) {
     console.error("Error refreshing token: ", error);
+
+    // Check if the error is related to invalid refresh token
+    if (
+      error.code === "NotAuthorizedException" ||
+      error.code === "InvalidParameterException"
+    ) {
+      return createResponse(401, "Invalid refresh token");
+    }
+
     return createResponse(500, "Internal Server Error");
   }
 };

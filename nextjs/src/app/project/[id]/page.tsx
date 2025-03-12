@@ -27,15 +27,13 @@ const ProjectPage = () => {
   const handleSave = async () => {
     try {
       if (inputProject) {
-        console.log("input project to save", inputProject);
-
         const newProject = {
           ...inputProject,
           lastEdited: new Date().toISOString(),
         };
 
         // Create the project via the API
-        await createProject(access_token as string, newProject);
+        await createProject(access_token as any, newProject);
         setSuccessMsg("Project saved...");
         setSuccess(true);
 
@@ -48,8 +46,6 @@ const ProjectPage = () => {
           addProject(newProject);
           console.log("Project added successfully.");
         }
-
-        console.log("Project saved successfully. Current projects: ", projects);
 
         // Navigate to /dashboard after 2 seconds
         setTimeout(() => {
