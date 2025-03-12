@@ -7,15 +7,13 @@ import useProjectStore from "@/stores/project/useProjectStore";
 
 const RouteProtector: React.FC = () => {
   const { isLoggedIn, isHydrated } = useAuthStore();
-  const { setProjects } = useProjectStore();
+  const { setProjects, isHydrated: isHydratedProjects } = useProjectStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (isHydrated) {
-      if (!isLoggedIn) {
-        router.replace("/");
-        setProjects([]);
-      }
+    if (isHydrated && isHydratedProjects && !isLoggedIn) {
+      router.replace("/");
+      setProjects([]);
     }
   }, [isHydrated, isLoggedIn, router]);
 
