@@ -29,7 +29,7 @@ const MobileHeader: React.FC<Props> = () => {
           <FaArrowLeft size={32} />
         </button>
       )}
-      <button className="ml-auto" onClick={handleCLick}>
+      <button className="mr-auto" onClick={handleCLick}>
         <FaBars size={32} />
       </button>
     </div>

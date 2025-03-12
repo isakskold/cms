@@ -18,8 +18,8 @@ const Sidebar: React.FC<Props> = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed flex flex-col overflow-auto items-center w-full h-full bg-blue-900">
-      <div className="flex justify-end w-full px-5">
+    <div className="fixed top-0 left-0 flex flex-col overflow-auto items-center w-[100vw] h-full bg-blue-900">
+      <div className="flex justify-start w-full px-5">
         <Close />
       </div>
 
