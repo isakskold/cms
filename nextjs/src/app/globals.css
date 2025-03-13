@@ -36,3 +36,19 @@ label,
 p {
   color: white;
 }
+
+input,
+textarea {
+  padding: 0.5rem; /* Adds padding for better spacing */
+  border: 1px solid #d1d5db; /* Light border color for both */
+  border-radius: 0.75rem; /* Rounded corners for both */
+  outline: none; /* Remove default focus outline */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Smooth transition for focus states */
+  field-sizing: content;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #3b82f6; /* Blue border on focus */
+  box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.7); /* Subtle shadow around input */
+}

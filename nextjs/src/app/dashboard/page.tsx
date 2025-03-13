@@ -5,7 +5,7 @@ interface Props {}
 
 const page: React.FC<Props> = () => {
   return (
-    <div className="h-full flex flex-col ">
+    <div className="h-full flex flex-col p-4">
       <NewProjectBtn />
       <Overview />
     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import deleteProject from "@/requests/project/deleteProject";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
@@ -7,9 +8,10 @@ import useProjectStore from "@/stores/project/useProjectStore";
 
 interface Props {
   projectId: string;
+  projectExist: boolean;
 }
 
-const DeleteProjectBtn: React.FC<Props> = ({ projectId }) => {
+const DeleteProjectBtn: React.FC<Props> = ({ projectId, projectExist }) => {
   const { access_token } = useAuthStore().tokenData || {};
   const { removeProject } = useProjectStore();
   const router = useRouter();
@@ -29,6 +31,9 @@ const DeleteProjectBtn: React.FC<Props> = ({ projectId }) => {
       alert("Failed to delete project");
     }
   };
+
+  // If the project doesn't exist it is being created, so here we can hide the delete button
+  if (!projectExist) return null;
 
   return (
     <button

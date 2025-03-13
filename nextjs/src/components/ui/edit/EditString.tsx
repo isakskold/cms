@@ -86,14 +86,14 @@ const EditString: React.FC<Props> = ({ label }) => {
       <div>
         {label === "longDescription" ? (
           <textarea
-            className="p-1 rounded-xl field-sizing-content w-full min-h-48 "
+            className="w-full min-h-48"
             value={value}
             onChange={handleChange}
             rows={5} // Adjust rows as needed
           />
         ) : (
           <input
-            className="p-1 overflow-auto rounded-xl field-sizing-content min-w-20 max-w-[190px] lg:max-w-[260px]"
+            className="overflow-auto w-full md:w-[40vw] xl:w-[512px]"
             type="text"
             value={value}
             onChange={handleChange}

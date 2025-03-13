@@ -9,6 +9,7 @@ import EditSkills from "@/components/ui/edit/EditSkills";
 import EditString from "@/components/ui/edit/EditString";
 import createProject from "@/requests/project/createOrUpdateProject";
 import DeleteProjectBtn from "./DeleteProjectBtn";
+import Header from "@/components/ui/edit/Header";
 import formatDateTime from "@/components/utils/formatTime";
 
 const ProjectPage = () => {
@@ -22,6 +23,9 @@ const ProjectPage = () => {
   const [successMsg, setSuccessMsg] = useState<string | null>();
   const [success, setSuccess] = useState<boolean>(false);
   const project = projects.find((p) => p.id === projectId);
+
+  // Check if the projectId exists in the projects store
+  const projectExists = projects.some((project) => project.id === projectId);
 
   // Save changes by updating the project in the store
   const handleSave = async () => {
@@ -82,7 +86,8 @@ const ProjectPage = () => {
 
   return (
     <div className="flex flex-col justify-between flex-1 p-4">
-      <div>
+      <div className="flex flex-col max-w-full">
+        <Header projectExist={projectExists} />
         <div className="flex flex-col gap-16 md:flex-row md:justify-between mb-16">
           <div className="flex flex-col gap-4">
             <EditString label="name" />
@@ -116,7 +121,7 @@ const ProjectPage = () => {
       </div>
 
       <div className="mt-20 flex flex-col gap-6">
-        <DeleteProjectBtn projectId={projectId} />
+        <DeleteProjectBtn projectId={projectId} projectExist={projectExists} />
         <p>
           <strong>Project ID:</strong> {projectId}
         </p>
