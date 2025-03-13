@@ -23,32 +23,7 @@ const EditString: React.FC<Props> = ({ label }) => {
     state.projects.find((p) => p.id === projectId)
   );
   // Get the temporary (non-persisted) inputProject state and its setter.
-  const inputProject = useProjectStore((state) => state.inputProject);
-  const setInputProject = useProjectStore((state) => state.setInputProject);
-
-  // Initialize inputProject with default values if it's a new project (id not found in store).
-  useEffect(() => {
-    if (!project) {
-      console.log("Setting up the project to create");
-
-      // Initialize inputProject with default values for a new project
-      setInputProject({
-        id: id as string,
-        lastEdited: new Date().toISOString(),
-        name: "",
-        logo: "",
-        description: "",
-        longDescription: "",
-        skills: [],
-        website: "",
-        github: "",
-        images: [],
-      });
-    } else if (project) {
-      // If project exists, update inputProject with the project data
-      setInputProject(project);
-    }
-  }, []);
+  const { inputProject, setInputProject } = useProjectStore();
 
   // Determine the value for the input field:
   // - If inputProject exists, use that.

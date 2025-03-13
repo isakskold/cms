@@ -11,21 +11,78 @@ import createProject from "@/requests/project/createOrUpdateProject";
 import DeleteProjectBtn from "./DeleteProjectBtn";
 import Header from "@/components/ui/edit/Header";
 import formatDateTime from "@/components/utils/formatTime";
+import { Project } from "@/types/data/project";
 
 const ProjectPage = () => {
   const { id } = useParams();
   const router = useRouter();
   const projectId = String(id);
-  const { projects, updateProject, inputProject, setInputProject, addProject } =
-    useProjectStore();
+  const {
+    projects,
+    updateProject,
+    inputProject,
+    setInputProject,
+    addProject,
+    isHydrated,
+  } = useProjectStore();
   const { access_token } = useAuthStore().tokenData || {};
 
   const [successMsg, setSuccessMsg] = useState<string | null>();
   const [success, setSuccess] = useState<boolean>(false);
-  const project = projects.find((p) => p.id === projectId);
+  const [project, setProject] = useState<Project>();
+  const [projectExists, setProjectExists] = useState<boolean>(false);
 
-  // Check if the projectId exists in the projects store
-  const projectExists = projects.some((project) => project.id === projectId);
+  // Initialize inputProject with default values if it's a new project (id not found in store).
+  useEffect(() => {
+    // Wait for the store to be hydrated before accessing project data
+    if (!isHydrated) {
+      console.log("Store not hydrated yet.");
+      return; // Skip if store hasn't been hydrated yet
+    }
+
+    console.log("Store has been hydrated");
+
+    const foundProject = projects.find((p) => p.id === projectId);
+    const exists = Boolean(foundProject);
+
+    // Check if the projectId exists in the projects store
+    console.log(
+      "Checking if project with id ",
+      projectId,
+      " exist in the projects array: ",
+      projects
+    );
+    console.log("Project found: ", foundProject);
+    console.log("Does project exist?: ", exists);
+
+    setProjectExists(exists);
+    setProject(foundProject);
+
+    if (!foundProject) {
+      console.log("Project does not exist, setting up the project to create");
+      console.log("Project: ", project);
+      console.log("Does project exist?: ", projectExists);
+
+      // Initialize inputProject with default values for a new project
+      setInputProject({
+        id: id as string,
+        lastEdited: new Date().toISOString(),
+        name: "",
+        logo: "",
+        description: "",
+        longDescription: "",
+        skills: [],
+        website: "",
+        github: "",
+        images: [],
+      });
+    } else {
+      // If project exists, update inputProject with the project data
+      console.log("Setting input project to: ", foundProject);
+
+      setInputProject(foundProject as Project);
+    }
+  }, [isHydrated, projects, projectId, setInputProject]); // Dependency on `projects` and `project` to trigger the effect when data is updated
 
   // Save changes by updating the project in the store
   const handleSave = async () => {
