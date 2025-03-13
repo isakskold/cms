@@ -5,6 +5,7 @@ import deleteProject from "@/requests/project/deleteProject";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import useProjectStore from "@/stores/project/useProjectStore";
+import Loading from "@/components/utils/loading";
 
 interface Props {
   projectId: string;
@@ -15,25 +16,25 @@ const DeleteProjectBtn: React.FC<Props> = ({ projectId, projectExist }) => {
   const { access_token } = useAuthStore().tokenData || {};
   const { removeProject } = useProjectStore();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleDeletion = async () => {
     try {
+      setLoading(true);
       await deleteProject(access_token as string, projectId);
-      removeProject(projectId); // Remove project from local storage too
-
+      removeProject(projectId);
       router.push("/dashboard");
-      // Delay the alert to show after the navigation
-      setTimeout(() => {
-        alert("Project deleted successfully");
-      }, 100);
     } catch (error) {
       console.error("Error deleting project:", error);
       alert("Failed to delete project");
+      setLoading(false); // Only reset loading if deletion fails
     }
   };
 
   // If the project doesn't exist it is being created, so here we can hide the delete button
   if (!projectExist) return null;
+
+  if (loading) return <Loading text="" />;
 
   return (
     <button

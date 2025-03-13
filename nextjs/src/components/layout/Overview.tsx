@@ -43,10 +43,15 @@ const Overview: React.FC<Props> = () => {
     td: "border border-black py-2 px-8 w-1/3 text-center whitespace-nowrap overflow-hidden text-ellipsis",
   };
 
+  const handleRowClick = (projectId: string) => {
+    router.push(`/project/${projectId}`);
+    setLoading(true);
+  };
+
   return (
     <div className="overflow-x-auto rounded-2xl">
       {loading ? (
-        <Loading text="Loading projects..." />
+        <Loading text="" />
       ) : (
         <table className="w-full min-w-[680px] table-fixed border-collapse border border-sky-700 bg-sky-200">
           <thead className="">
@@ -57,21 +62,28 @@ const Overview: React.FC<Props> = () => {
             </tr>
           </thead>
           <tbody>
-            {projects.map((project) => (
-              <tr
-                key={project.id}
-                onClick={() => router.push(`/project/${project.id}`)}
-                className="hover:bg-sky-400 cursor-pointer h-8"
-              >
-                <td className={tableStyles.td}>{project.name}</td>
-                <td className={tableStyles.td}>{project.description}</td>
-                <td className={tableStyles.td}>
-                  {project.lastEdited
-                    ? formatDateTime(project.lastEdited)
-                    : "Never"}
-                </td>
-              </tr>
-            ))}
+            {[...projects]
+              .sort((a, b) => {
+                return (
+                  new Date(b.lastEdited || 0).getTime() -
+                  new Date(a.lastEdited || 0).getTime()
+                );
+              })
+              .map((project) => (
+                <tr
+                  key={project.id}
+                  onClick={() => handleRowClick(project.id)}
+                  className="hover:bg-sky-400 cursor-pointer h-8"
+                >
+                  <td className={tableStyles.td}>{project.name}</td>
+                  <td className={tableStyles.td}>{project.description}</td>
+                  <td className={tableStyles.td}>
+                    {project.lastEdited
+                      ? formatDateTime(project.lastEdited)
+                      : "Never"}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       )}
