@@ -12,7 +12,23 @@ This is a mono repo. The `nextjs/` directory is a Next.js frontend application, 
 
 ## How to connect this CMS to your own portfolio
 
-coming soon...
+coming soon...  
+
+## Authentication with Cognito and Cookies
+
+Project uses the aws service `Cognito` to manage users. It stores users and handles generating tokens. In order to make it secure, I do not handle the refresh token client side. As you can see in the flow below, only the access token is stored client side, while refresh token is set as a httpOnly cookie in the backend.
+
+- User logs in
+- Cognito responds with a "code" in the URL
+- Client extracts the code string and sends the code to a lambda function
+- Lambda function uses the code string to exchange it for tokens from cognito
+- Lambda function sets the refresh token as a cookie for the client that made the request
+- Lambda function sends the access token to the client
+- Client stores and uses the access token to make requests
+- When access token expires, client calls /users/refreshToken to generate a new access token
+- The httpOnly cookie with refresh token is being included in request
+- If the refresh token from cookie is valid, the lambda function will return the new access token to the client
+- If refresh token fails, user will be logged out.
 
 ## Zustand as "cache"
 
