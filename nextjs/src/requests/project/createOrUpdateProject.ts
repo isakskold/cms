@@ -3,8 +3,6 @@ import { Project } from "@/types/data/project";
 
 const createProject = async (token: string, project: Project) => {
   try {
-    console.log("Creating project with token: ", token);
-
     const response = await apiClient.post("/project/create", project, {
       headers: {
         Authorization: `Bearer ${token}`, // Use the token in the Authorization header

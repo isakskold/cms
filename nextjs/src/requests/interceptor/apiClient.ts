@@ -35,7 +35,7 @@ apiClient.interceptors.response.use(
       // Get refresh token from the store
       const { tokenData, setTokenData } = useAuthStore.getState();
 
-      if (tokenData?.refresh_token && !isRefreshing) {
+      if (!isRefreshing) {
         // Check if we're not already refreshing the token
         isRefreshing = true;
         try {
@@ -48,11 +48,7 @@ apiClient.interceptors.response.use(
             const response = await axios.post(
               "https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/user/refreshToken", // Backend refresh token route
               {}, // Request body (empty in this case)
-              {
-                headers: {
-                  Authorization: `Bearer ${tokenData.refresh_token}`, // Replace with actual refresh token
-                },
-              }
+              { withCredentials: true }
             );
             newTokenData = response.data.data;
             console.log("New token data: ", newTokenData);
@@ -71,11 +67,7 @@ apiClient.interceptors.response.use(
 
           // Preserve the previous refresh token if it exists
           const updatedTokenData = {
-            access_token: newTokenData.accessToken,
-            id_token: newTokenData.idToken,
-            refresh_token: tokenData.refresh_token, // Keep the old refresh token if it exists
-            token_type: newTokenData.tokenType,
-            expires_in: newTokenData.expiresIn,
+            access_token: newTokenData.accessToken as string,
           };
 
           // Update the token data in the store and wait for it to complete
