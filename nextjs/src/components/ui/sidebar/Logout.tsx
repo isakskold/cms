@@ -5,7 +5,7 @@ import { useAuthStore } from "@/stores/auth/useAuthStore";
 import useSidebarStore from "@/stores/useSidebarStore";
 
 const Logout: React.FC = () => {
-  const { setEmail, setTokenData, isLoggedIn } = useAuthStore();
+  const { setTokenData, isLoggedIn } = useAuthStore();
   const { setSidebar } = useSidebarStore();
 
   useEffect(() => {
@@ -14,7 +14,6 @@ const Logout: React.FC = () => {
 
   const handleLogout = () => {
     console.log("Logging out user...");
-    setEmail(null);
     setTokenData(null);
     const cognitoLogoutUrl = `${
       process.env.NEXT_PUBLIC_COGNITO_DOMAIN

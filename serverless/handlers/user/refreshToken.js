@@ -1,4 +1,5 @@
 const AWS = require("aws-sdk");
+const cookie = require("cookie");
 require("dotenv").config();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const createResponse = require("../../goodStuffToHave/createResponse");
@@ -7,16 +8,14 @@ module.exports.handler = async (event) => {
   try {
     console.log("Event: ", event);
 
-    // Extract the refresh token from the event body (or query params)
-    const refreshToken = event.headers["authorization"]?.split(" ")[1];
+    const cookies = cookie.parse(event.cookies?.[0] || "");
+
+    console.log("Cookies: ", cookies);
+
+    const refreshToken = cookies.refreshToken; // Get the refresh token
 
     if (!refreshToken) {
-      console.error("Refresh token error:", error);
-
-      return createResponse(
-        400,
-        "Refresh token is required in the Authorization header"
-      );
+      return createResponse(400, "Refresh token is not included in cookies");
     }
 
     // Define parameters for Cognito's InitiateAuth or AdminInitiateAuth
@@ -34,10 +33,6 @@ module.exports.handler = async (event) => {
     // Return the tokens using createResponse
     return createResponse(200, "Token refreshed successfully", {
       accessToken: result.AuthenticationResult.AccessToken,
-      refreshToken: result.AuthenticationResult.RefreshToken,
-      idToken: result.AuthenticationResult.IdToken,
-      tokenType: result.AuthenticationResult.TokenType || "Bearer", // Defaults to "Bearer" if not present
-      expiresIn: result.AuthenticationResult.ExpiresIn || 3600, // Defaults to 3600 if not present
     });
   } catch (error) {
     console.error("Error refreshing token: ", error);

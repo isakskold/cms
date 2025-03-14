@@ -3,12 +3,25 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import exchangeCode from "@/requests/user/exchangeCode";
 
 export default function CallbackPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { setTokenData } = useAuthStore();
+
+  // Logout function
+  const handleLogout = () => {
+    console.log("Logging out user...");
+    setTokenData(null);
+    const cognitoLogoutUrl = `${
+      process.env.NEXT_PUBLIC_COGNITO_DOMAIN
+    }/logout?client_id=${
+      process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
+    }&logout_uri=${encodeURIComponent("http://localhost:3000")}`;
+    window.location.href = cognitoLogoutUrl;
+  };
 
   useEffect(() => {
     // Ensure the code runs only in the client-side environment
@@ -25,37 +38,9 @@ export default function CallbackPage() {
 
       const fetchTokens = async () => {
         try {
-          const redirectUri = "http://localhost:3000/callback"; // Your redirect URI
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_COGNITO_DOMAIN}/oauth2/token`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-              body: new URLSearchParams({
-                grant_type: "authorization_code",
-                code: code,
-                redirect_uri: redirectUri,
-                client_id: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID as string,
-              }),
-            }
-          );
-
-          // If the response is not OK, log the body for more information
-          if (!response.ok) {
-            const errorBody = await response.json();
-            console.error("Error response from Cognito:", errorBody);
-            throw new Error(`Failed to exchange authorization code`);
-          }
-
-          const data = await response.json();
-          // You should now have access token, id token, and refresh token (if applicable)
-          console.log("Tokens:", data);
-
-          // Handle storing the tokens in your app (e.g., in a context or local storage)
-          // Example: save to localStorage, context, or a global store
-          setTokenData(data);
+          const data = await exchangeCode(code);
+          setTokenData({ access_token: data.access_token });
+          console.log("Refresh token cookie set, and access token returned");
 
           setLoading(false);
           router.push("/dashboard"); // Redirect to dashboard or desired page
@@ -63,6 +48,8 @@ export default function CallbackPage() {
           console.error(error);
           setError("Failed to retrieve tokens.");
           setLoading(false);
+
+          handleLogout();
         }
       };
 
