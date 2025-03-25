@@ -20,7 +20,9 @@ export default function CallbackPage() {
         process.env.NEXT_PUBLIC_COGNITO_DOMAIN
       }/logout?client_id=${
         process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
-      }&logout_uri=${encodeURIComponent("http://localhost:3000")}`;
+      }&logout_uri=${encodeURIComponent(
+        process.env.NEXT_PUBLIC_APP_DOMAIN as string
+      )}`;
       window.location.href = cognitoLogoutUrl;
     };
 
