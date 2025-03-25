@@ -51,7 +51,7 @@ export default function CallbackPage() {
           setError("Failed to retrieve tokens.");
           setLoading(false);
 
-          handleLogout();
+          // handleLogout();
         }
       };
 
