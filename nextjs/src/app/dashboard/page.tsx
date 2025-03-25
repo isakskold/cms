@@ -1,9 +1,7 @@
 import Overview from "@/components/layout/Overview";
 import NewProjectBtn from "./NewProjectBtn";
 
-interface Props {}
-
-const page: React.FC<Props> = () => {
+const page: React.FC = () => {
   return (
     <div className="h-full flex flex-col p-4">
       <NewProjectBtn />

@@ -1,6 +1,4 @@
-interface Props {}
-
-const ErrorMsg: React.FC<Props> = () => {
+const ErrorMsg: React.FC = () => {
   return <div></div>;
 };
 

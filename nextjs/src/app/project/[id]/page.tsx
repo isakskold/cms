@@ -81,7 +81,14 @@ const ProjectPage = () => {
 
       setInputProject(foundProject as Project);
     }
-  }, [isHydrated, projects, projectId, setInputProject]); // Dependency on `projects` and `project` to trigger the effect when data is updated
+  }, [
+    isHydrated,
+    projects,
+    projectId,
+    setInputProject,
+    project,
+    projectExists,
+  ]); // Dependency on `projects` and `project` to trigger the effect when data is updated
 
   // Save changes by updating the project in the store
   const handleSave = async () => {
@@ -93,7 +100,7 @@ const ProjectPage = () => {
         };
 
         // Create the project via the API
-        await createProject(access_token as any, newProject);
+        await createProject(access_token as string, newProject);
         setSuccessMsg("Project saved...");
         setSuccess(true);
 

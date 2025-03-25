@@ -44,7 +44,7 @@ export default function CallbackPage() {
 
           setLoading(false);
           router.push("/dashboard"); // Redirect to dashboard or desired page
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error(error);
           setError("Failed to retrieve tokens.");
           setLoading(false);

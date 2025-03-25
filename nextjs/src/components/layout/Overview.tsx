@@ -8,9 +8,7 @@ import fetchProjects from "@/requests/project/fetchProjects";
 import Loading from "../utils/loading";
 import formatDateTime from "../utils/formatTime";
 
-interface Props {}
-
-const Overview: React.FC<Props> = () => {
+const Overview: React.FC = () => {
   const router = useRouter();
   const { projects, setProjects } = useProjectStore();
   const { access_token } = useAuthStore().tokenData || {};

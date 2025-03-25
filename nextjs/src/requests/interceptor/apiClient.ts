@@ -33,7 +33,7 @@ apiClient.interceptors.response.use(
       console.log("Interceptor activated on 401 error");
 
       // Get refresh token from the store
-      const { tokenData, setTokenData } = useAuthStore.getState();
+      const { setTokenData } = useAuthStore.getState();
 
       if (!isRefreshing) {
         // Check if we're not already refreshing the token

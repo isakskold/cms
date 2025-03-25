@@ -1,9 +1,6 @@
 import apiClient from "../interceptor/apiClient";
 
 const fetchProjects = async (token: string) => {
-  const url =
-    "https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/project/fetch";
-
   try {
     const response = await apiClient.get("/project/fetch", {
       headers: {
