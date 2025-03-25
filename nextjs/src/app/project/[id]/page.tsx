@@ -82,6 +82,7 @@ const ProjectPage = () => {
       setInputProject(foundProject as Project);
     }
   }, [
+    id,
     isHydrated,
     projects,
     projectId,
