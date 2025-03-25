@@ -23,7 +23,7 @@ export default function Home() {
   const redirectToCognito = () => {
     setLoading(true);
 
-    const cognitoHostedUiUrl = `${process.env.NEXT_PUBLIC_COGNITO_DOMAIN}/login?client_id=${process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID}&redirect_uri=http://localhost:3000/callback&response_type=code&scope=email+openid+phone`;
+    const cognitoHostedUiUrl = `${process.env.NEXT_PUBLIC_COGNITO_DOMAIN}/login?client_id=${process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_APP_DOMAIN}/callback&response_type=code&scope=email+openid+phone`;
     window.location.href = cognitoHostedUiUrl; // Redirect to Cognito Hosted UI
   };
 
