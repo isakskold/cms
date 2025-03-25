@@ -11,19 +11,19 @@ export default function CallbackPage() {
   const [error, setError] = useState<string | null>(null);
   const { setTokenData } = useAuthStore();
 
-  // Logout function
-  const handleLogout = () => {
-    console.log("Logging out user...");
-    setTokenData(null);
-    const cognitoLogoutUrl = `${
-      process.env.NEXT_PUBLIC_COGNITO_DOMAIN
-    }/logout?client_id=${
-      process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
-    }&logout_uri=${encodeURIComponent("http://localhost:3000")}`;
-    window.location.href = cognitoLogoutUrl;
-  };
-
   useEffect(() => {
+    // Logout function
+    const handleLogout = () => {
+      console.log("Logging out user...");
+      setTokenData(null);
+      const cognitoLogoutUrl = `${
+        process.env.NEXT_PUBLIC_COGNITO_DOMAIN
+      }/logout?client_id=${
+        process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
+      }&logout_uri=${encodeURIComponent("http://localhost:3000")}`;
+      window.location.href = cognitoLogoutUrl;
+    };
+
     // Ensure the code runs only in the client-side environment
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -55,7 +55,7 @@ export default function CallbackPage() {
 
       fetchTokens();
     }
-  }, [router, handleLogout, setTokenData]);
+  }, [router, setTokenData]);
 
   return (
     <div className="h-full flex justify-center items-center">
