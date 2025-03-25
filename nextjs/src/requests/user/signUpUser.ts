@@ -11,12 +11,15 @@ const signUpUser = async (email: string, password: string) => {
     });
 
     return response.data; // Returns the response data from the API
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error during signup:", error);
 
-    // If there's a message in the error response, set that as the error
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message); // Throw error message from the response
+    // If it's an Axios error, we can safely access the response
+    if (axios.isAxiosError(error) && error.response) {
+      // If there's a message in the error response, set that as the error
+      if (error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message); // Throw error message from the response
+      }
     }
 
     // If there's no specific message, throw a fallback error

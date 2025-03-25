@@ -17,13 +17,16 @@ const refreshToken = async (refreshToken: string) => {
     console.log("Response Data: ", response.data.data);
 
     return response.data.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Log the error for debugging purposes
     console.error("Error during token refresh:", error);
 
-    // If there's a message in the error response, set that as the error
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message); // Throw error message from the response
+    // If it's an Axios error, we can safely access the response
+    if (axios.isAxiosError(error) && error.response) {
+      // If there's a message in the error response, set that as the error
+      if (error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message); // Throw error message from the response
+      }
     }
 
     // Throw a general error with a fallback message
