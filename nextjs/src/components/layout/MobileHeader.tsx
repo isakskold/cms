@@ -3,9 +3,7 @@ import { FaBars, FaArrowLeft } from "react-icons/fa";
 import useSidebarStore from "@/stores/useSidebarStore";
 import { usePathname, useRouter } from "next/navigation";
 
-interface Props {}
-
-const MobileHeader: React.FC<Props> = () => {
+const MobileHeader: React.FC = () => {
   const { isOpen, setSidebar } = useSidebarStore();
   const pathname = usePathname(); // Get current route
   const router = useRouter();

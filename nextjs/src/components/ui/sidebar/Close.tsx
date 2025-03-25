@@ -2,9 +2,7 @@
 
 import useSidebarStore from "@/stores/useSidebarStore";
 
-interface Props {}
-
-const Close: React.FC<Props> = () => {
+const Close: React.FC = () => {
   const { setSidebar } = useSidebarStore();
   const handleClick = () => {
     setSidebar(false);

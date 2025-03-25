@@ -1,9 +1,7 @@
 import apiClient from "../interceptor/apiClient";
+import axios from "axios"; // Import axios here
 
 const fetchProjects = async (token: string) => {
-  const url =
-    "https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/project/fetch";
-
   try {
     const response = await apiClient.get("/project/fetch", {
       headers: {
@@ -13,13 +11,18 @@ const fetchProjects = async (token: string) => {
     console.log("Projects: ", response.data.data.projects);
 
     return response.data.data.projects;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error during projects fetch:", error);
 
-    // If there's a message in the error response, set that as the error
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message); // Throw error message from the response
+    // Type guard to check if the error is an Axios error
+    if (axios.isAxiosError(error) && error.response) {
+      // If there's a message in the error response, set that as the error
+      if (error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message); // Throw error message from the response
+      }
     }
+
+    // Throw a general error with a fallback message
     throw new Error("An error occurred during projects fetch");
   }
 };

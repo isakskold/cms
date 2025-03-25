@@ -1,3 +1,4 @@
+import axios from "axios";
 import apiClient from "../interceptor/apiClient";
 import { Project } from "@/types/data/project";
 
@@ -10,15 +11,18 @@ const createProject = async (token: string, project: Project) => {
     });
 
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error during project creation:", error);
 
-    // If there's a message in the error response, set that as the error
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message); // Throw error message from the response
+    // If it's an Axios error, we can safely access the response
+    if (axios.isAxiosError(error) && error.response) {
+      // If there's a message in the error response, set that as the error
+      if (error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message); // Throw error message from the response
+      }
     }
 
-    // Throw a general error with a fallback message
+    // If there's no specific message, throw a fallback error
     throw new Error("An error occurred during project creation");
   }
 };

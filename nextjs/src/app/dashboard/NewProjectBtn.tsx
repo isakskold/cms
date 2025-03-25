@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "@/components/utils/loading";
 
-interface Props {}
-
-const NewProjectBtn: React.FC<Props> = () => {
+const NewProjectBtn: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 

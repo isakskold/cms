@@ -1,7 +1,6 @@
 "use client";
 
 import useSidebarStore from "@/stores/useSidebarStore";
-import Logo from "../ui/sidebar/Logo";
 import Option from "../ui/sidebar/Option";
 import Logout from "../ui/sidebar/Logout";
 import Close from "../ui/sidebar/Close";

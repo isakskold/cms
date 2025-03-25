@@ -10,10 +10,13 @@ const exchangeCode = async (code: string) => {
     // You can process the response here if needed
     console.log("Response from API:", response.data);
     return response.data; // Or whatever you need to return from the API
-  } catch (error: any) {
-    // If there's a message in the error response, set that as the error
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message); // Throw error message from the response
+  } catch (error: unknown) {
+    // Type guard to check if the error is an AxiosError
+    if (axios.isAxiosError(error) && error.response) {
+      // If there's a message in the error response, set that as the error
+      if (error.response.data && error.response.data.message) {
+        throw new Error(error.response.data.message); // Throw error message from the response
+      }
     }
 
     // Throw a general error with a fallback message

@@ -15,7 +15,7 @@ const RouteProtector: React.FC = () => {
       router.replace("/");
       setProjects([]);
     }
-  }, [isHydrated, isLoggedIn, router]);
+  }, [isHydrated, isHydratedProjects, isLoggedIn, router, setProjects]);
 
   return null; // This component doesn't render anything
 };
