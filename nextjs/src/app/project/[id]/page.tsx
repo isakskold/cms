@@ -4,8 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import SaveOrDiscardBtn from "@/components/ui/buttons/SaveOrDiscardBtn";
 import useProjectStore from "@/stores/project/useProjectStore";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
-import EditImages from "@/components/ui/edit/EditImages";
-import EditSkills from "@/components/ui/edit/EditSkills";
+import EditArray from "@/components/ui/edit/EditArray";
 import EditString from "@/components/ui/edit/EditString";
 import createProject from "@/requests/project/createOrUpdateProject";
 import DeleteProjectBtn from "./DeleteProjectBtn";
@@ -154,8 +153,8 @@ const ProjectPage = () => {
               <EditString label="longDescription" />
             </div>
 
-            <EditSkills />
-            <EditImages />
+            <EditArray label="skills" />
+            <EditArray label="images" />
             <EditString label="website" />
             <EditString label="github" />
           </div>
