@@ -1,18 +1,29 @@
-const createResponse = require("../../goodStuffToHave/createResponse");
-
 module.exports.handler = async () => {
   try {
     console.log("Invalidating refresh token cookie...");
 
-    // Create a response to clear the refresh token cookie
+    // Set the cookie to clear the refresh token
     const headers = {
       "Set-Cookie":
-        "refreshToken=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0",
+        "refreshToken=; Path=/user/refreshToken; HttpOnly; Secure; SameSite=None; Max-Age=0",
+      "Content-Type": "application/json",
     };
 
-    return createResponse(200, "User logged out successfully", null, headers);
+    // Return the response with the headers
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        message: "User logged out successfully",
+      }),
+    };
   } catch (error) {
     console.error("Error during logout: ", error);
-    return createResponse(500, "Internal Server Error");
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: "Internal Server Error",
+      }),
+    };
   }
 };
