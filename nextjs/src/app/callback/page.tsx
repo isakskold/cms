@@ -13,7 +13,7 @@ export default function CallbackPage() {
 
   useEffect(() => {
     // Logout function
-    const handleLogout = () => {
+    /* const handleLogout = () => {
       console.log("Logging out user...");
       setTokenData(null);
       const cognitoLogoutUrl = `${
@@ -24,7 +24,7 @@ export default function CallbackPage() {
         process.env.NEXT_PUBLIC_APP_DOMAIN as string
       )}`;
       window.location.href = cognitoLogoutUrl;
-    };
+    }; */
 
     // Ensure the code runs only in the client-side environment
     if (typeof window !== "undefined") {
