@@ -9,9 +9,6 @@ export default function Home() {
   const { isLoggedIn } = useAuthStore();
   const router = useRouter();
 
-  console.log("Cognito Client ID:", process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID);
-  console.log("Cognito Domain:", process.env.NEXT_PUBLIC_COGNITO_DOMAIN);
-
   // Redirect if logged in
   useEffect(() => {
     if (isLoggedIn) {

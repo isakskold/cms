@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import exchangeCode from "@/requests/user/exchangeCode";
+import logout from "@/requests/user/logout";
 
 export default function CallbackPage() {
   const router = useRouter();
@@ -13,17 +14,23 @@ export default function CallbackPage() {
 
   useEffect(() => {
     // Logout function
-    const handleLogout = () => {
+    const handleLogout = async () => {
       console.log("Logging out user...");
-      setTokenData(null);
-      const cognitoLogoutUrl = `${
-        process.env.NEXT_PUBLIC_COGNITO_DOMAIN
-      }/logout?client_id=${
-        process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
-      }&logout_uri=${encodeURIComponent(
-        process.env.NEXT_PUBLIC_APP_DOMAIN as string
-      )}`;
-      window.location.href = cognitoLogoutUrl;
+      try {
+        await logout();
+
+        setTokenData(null);
+        const cognitoLogoutUrl = `${
+          process.env.NEXT_PUBLIC_COGNITO_DOMAIN
+        }/logout?client_id=${
+          process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
+        }&logout_uri=${encodeURIComponent(
+          process.env.NEXT_PUBLIC_APP_DOMAIN as string
+        )}`;
+        window.location.href = cognitoLogoutUrl;
+      } catch (error) {
+        console.error("Logout failed:", error);
+      }
     };
 
     // Ensure the code runs only in the client-side environment

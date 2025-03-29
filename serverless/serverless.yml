@@ -69,6 +69,17 @@ functions:
           path: /user/signin
           method: post
 
+  logout:
+    handler: handlers/user/logout.handler
+    role:
+      Fn::GetAtt:
+        - CloudWatchRole
+        - Arn
+    events:
+      - httpApi:
+          path: /user/logout
+          method: post
+
   setRefreshToken:
     handler: handlers/user/setRefreshToken.handler
     role:

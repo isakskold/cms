@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import useSidebarStore from "@/stores/useSidebarStore";
+import logout from "@/requests/user/logout";
 
 const Logout: React.FC = () => {
   const { setTokenData, isLoggedIn } = useAuthStore();
@@ -12,16 +13,31 @@ const Logout: React.FC = () => {
     console.log("Updated isLoggedIn:", isLoggedIn);
   }, [isLoggedIn]); // Runs every time isLoggedIn changes
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log("Logging out user...");
-    setTokenData(null);
-    const cognitoLogoutUrl = `${
-      process.env.NEXT_PUBLIC_COGNITO_DOMAIN
-    }/logout?client_id=${
-      process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
-    }&logout_uri=${encodeURIComponent("http://localhost:3000")}`;
-    window.location.href = cognitoLogoutUrl;
-    setSidebar(false);
+
+    try {
+      // Call the logout API request to invalidate the session
+      await logout();
+
+      // After the API call succeeds, clear the token data and redirect to Cognito logout
+      setTokenData(null);
+
+      const cognitoLogoutUrl = `${
+        process.env.NEXT_PUBLIC_COGNITO_DOMAIN
+      }/logout?client_id=${
+        process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
+      }&logout_uri=${encodeURIComponent(
+        process.env.NEXT_PUBLIC_APP_DOMAIN as string
+      )}`;
+
+      window.location.href = cognitoLogoutUrl;
+
+      setSidebar(false); // Optionally close the sidebar
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Handle any errors during logout (e.g., show a message to the user)
+    }
   };
 
   return (

@@ -2,6 +2,20 @@
 
 A content management system application, used to managa portfolio data.
 
+## How to use the application
+
+- In your browser, enter ```https://cms-ten-snowy.vercel.app/```
+- Click on ```Login/Sign Up```
+- Login with an existing account, or create a new account
+- After successfull login, user will be navigated to the dashboard page
+- In the dashboard page, click ```New Project```
+- Fill in the fields with relevant data. Every field takes a string value
+- To discard unsaved changes, click on the ```Discard``` button
+- To save the project, click on the ```Save``` button
+- User will be redirected to the dashboard after saving the project
+- The new project should now be visible in the dashboard
+- User can click on the project to edit or delete it. Same save and discard options as before, but now there is also an ```Delete``` button that removes the project
+
 ## Use case
 
 This application is a tool to manage portfolio-related data such as projects, descriptions, images, skills, etc. The data is stored in the cloud, and the user of this application has to make their own API requests to fetch their data to their portfolio websites. The purpose of this application is to have a centralized environment for your portfolio data. This tool makes it easier to migrate to a new portfolio website without having to rewrite the data in the client; simply make the same HTTP request.
