@@ -4,17 +4,17 @@ A content management system application, used to managa portfolio data.
 
 ## How to use the application
 
-- In your browser, enter ```https://cms-ten-snowy.vercel.app/```
-- Click on ```Login/Sign Up```
+- In your browser, enter `https://cms-ten-snowy.vercel.app/`
+- Click on `Login/Sign Up`
 - Login with an existing account, or create a new account
 - After successfull login, user will be navigated to the dashboard page
-- In the dashboard page, click ```New Project```
+- In the dashboard page, click `New Project`
 - Fill in the fields with relevant data. Every field takes a string value
-- To discard unsaved changes, click on the ```Discard``` button
-- To save the project, click on the ```Save``` button
+- To discard unsaved changes, click on the `Discard` button
+- To save the project, click on the `Save` button
 - User will be redirected to the dashboard after saving the project
 - The new project should now be visible in the dashboard
-- User can click on the project to edit or delete it. Same save and discard options as before, but now there is also an ```Delete``` button that removes the project
+- User can click on the project to edit or delete it. Same save and discard options as before, but now there is also an `Delete` button that removes the project
 
 ## Use case
 
@@ -26,7 +26,17 @@ This is a mono repo. The `nextjs/` directory is a Next.js frontend application, 
 
 ## How to connect this CMS to your own portfolio
 
-coming soon...  
+In order to fetch the user data and use it in a portfolio application, do the following:
+
+- In the CMS application, navigate to settings page
+- Select fetch api key
+- Copy the API key
+- Make a GET request to `https://2upf63jpgg.execute-api.eu-north-1.amazonaws.com/public`
+- Include your email in the `x-user-email` header
+- Include your copied API Key in the `x-api-key` header
+- Extract the data from the response that you want to use in your portfolio
+
+To keep your API key secure, do not expose your API in your client. Instead, create a server request file in Next.js that makes this request. Let your frontend call your server request file, then let the server make the request defined above. This will make sure your API Key stays hidden.
 
 ## Authentication with Cognito and Cookies
 

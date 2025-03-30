@@ -1,4 +1,5 @@
 const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
+const crypto = require("crypto");
 
 const dynamoDB = new DynamoDBClient({ region: "eu-north-1" });
 
@@ -8,6 +9,9 @@ exports.handler = async (event) => {
   try {
     const { sub, email } = event.request.userAttributes;
 
+    // Generate a random API key (e.g., 32 bytes, encoded in hex)
+    const apiKey = crypto.randomBytes(32).toString("hex");
+
     console.log("Creating user in DynamoDB:", email);
     const dynamoParams = {
       TableName: "usersTable",
@@ -15,6 +19,7 @@ exports.handler = async (event) => {
         email: { S: email },
         createdAt: { S: new Date().toISOString() },
         cognitoUserSub: { S: sub },
+        apiKey: { S: apiKey },
         projects: { L: [] },
       },
     };

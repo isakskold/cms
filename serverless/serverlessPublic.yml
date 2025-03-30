@@ -1,0 +1,53 @@
+org: isaks
+
+service: cms-public-api # You can name your service here
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-north-1
+  httpApi:
+    id: 2upf63jpgg
+    name: cms-public
+
+functions:
+  fetchPublicProjects:
+    handler: handlers/public/fetchUserData.handler
+    role:
+      Fn::GetAtt:
+        - PublicAccessRole
+        - Arn
+    events:
+      - httpApi:
+          path: /public
+          method: get
+
+resources:
+  Resources:
+    # Public Access Role
+    PublicAccessRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: sts:AssumeRole
+              Principal:
+                Service: lambda.amazonaws.com
+        Policies:
+          - PolicyName: PublicAccessPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow # DynamoDB permissions
+                  Action:
+                    - dynamodb:GetItem
+                  Resource: arn:aws:dynamodb:eu-north-1:586794470362:table/usersTable
+
+                - Effect: Allow # CloudWatch permissions
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: arn:aws:logs:eu-north-1:*:*
