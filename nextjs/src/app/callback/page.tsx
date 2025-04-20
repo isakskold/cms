@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import exchangeCode from "@/requests/user/exchangeCode";
-import logout from "@/requests/user/logout";
 
 export default function CallbackPage() {
   const router = useRouter();
@@ -13,23 +12,6 @@ export default function CallbackPage() {
   const { setTokenData } = useAuthStore();
 
   useEffect(() => {
-    const handleLogout = async () => {
-      try {
-        await logout();
-        setTokenData(null);
-        const cognitoLogoutUrl = `${
-          process.env.NEXT_PUBLIC_COGNITO_DOMAIN
-        }/logout?client_id=${
-          process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
-        }&logout_uri=${encodeURIComponent(
-          process.env.NEXT_PUBLIC_APP_DOMAIN as string
-        )}`;
-        window.location.href = cognitoLogoutUrl;
-      } catch (error) {
-        setError("Logout failed");
-      }
-    };
-
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
