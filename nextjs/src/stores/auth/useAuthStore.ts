@@ -43,7 +43,7 @@ export const useAuthStore = create<AuthStore>()(
             } else {
               useProjectStore.getState().setProjects([]);
             }
-          } catch (error) {
+          } catch {
             useProjectStore.getState().setProjects([]);
           }
         } else {

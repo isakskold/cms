@@ -16,7 +16,6 @@ const DeleteProjectBtn: React.FC<Props> = ({ projectId, projectExist }) => {
   const { access_token } = useAuthStore().tokenData || {};
   const { removeProject } = useProjectStore();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -30,8 +29,6 @@ const DeleteProjectBtn: React.FC<Props> = ({ projectId, projectExist }) => {
 
   // If the project doesn't exist it is being created, so here we can hide the delete button
   if (!projectExist) return null;
-
-  if (loading) return <Loading text="" />;
 
   return (
     <button
