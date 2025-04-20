@@ -30,7 +30,13 @@ exports.handler = async (event) => {
 
     const formattedProjects = projects.map((project) => {
       const proj = project.M;
-      console.log("Processing project: ", proj); // Add logging to see the raw data
+      console.log("Processing project: ", proj);
+
+      // Safe value extraction helper function
+      const safeValue = (field, defaultValue = "") => {
+        if (!field || !field.S) return defaultValue;
+        return field.S;
+      };
 
       // Safe array extraction helper function
       const safeArray = (list) => {
@@ -38,56 +44,43 @@ exports.handler = async (event) => {
         return list.L.map((item) => item.S);
       };
 
-      // Parse field value safely
-      const parseFieldValue = (field) => {
-        if (field.M.type.S === "multiselect") {
-          return safeArray(field.M.value);
-        } else {
-          const strValue = field.M.value.S;
-          // Try to parse JSON if it looks like it
-          if (
-            strValue &&
-            (strValue.startsWith("{") || strValue.startsWith("["))
-          ) {
-            try {
-              return JSON.parse(strValue);
-            } catch (e) {
-              return strValue;
-            }
+      // Create a base project with required fields
+      const baseProject = {
+        id: safeValue(proj.id),
+        lastEdited: safeValue(proj.lastEdited),
+        name: safeValue(proj.name),
+        description: safeValue(proj.description),
+      };
+
+      // Process all other fields
+      Object.entries(proj).forEach(([key, value]) => {
+        // Skip the required fields we've already handled
+        if (["id", "lastEdited", "name", "description"].includes(key)) return;
+
+        // Check if this is a type field (ends with _type)
+        if (key.endsWith("_type")) {
+          const fieldName = key.replace("_type", "");
+          const fieldType = safeValue(value);
+
+          // Get the actual field value
+          const fieldValue = proj[fieldName];
+          if (!fieldValue) return;
+
+          // Handle different field types
+          if (fieldType === "multiselect" || fieldType === "image") {
+            baseProject[fieldName] = safeArray(fieldValue);
+          } else {
+            baseProject[fieldName] = safeValue(fieldValue);
           }
-          return strValue;
+          // Store the type information
+          baseProject[key] = fieldType;
         }
-      };
+      });
 
-      // Initialize customFields as an empty array if it doesn't exist
-      const customFields =
-        proj.customFields && proj.customFields.L
-          ? proj.customFields.L.map((field) => ({
-              id: field.M.id.S,
-              name: field.M.name.S,
-              type: field.M.type.S,
-              value: parseFieldValue(field),
-            }))
-          : [];
-
-      console.log("Processed customFields: ", customFields); // Add logging to see the processed data
-
-      return {
-        id: proj.id.S,
-        lastEdited: proj.lastEdited.S,
-        name: proj.name.S,
-        logo: proj.logo.S,
-        description: proj.description.S,
-        longDescription: proj.longDescription.S,
-        skills: safeArray(proj.skills),
-        website: proj.website.S,
-        github: proj.github.S,
-        images: safeArray(proj.images),
-        customFields: customFields,
-      };
+      return baseProject;
     });
 
-    console.log("Formatted projects: ", formattedProjects); // Add logging to see the final data
+    console.log("Formatted projects: ", formattedProjects);
 
     return createResponse(200, "User's projects retrieved successfully", {
       email,
