@@ -10,6 +10,28 @@ const { projectSchema } = require("../../goodStuffToHave/joi/projectSchema");
 
 const client = new DynamoDBClient({ region: "eu-north-1" });
 
+// Helper function to convert any value to DynamoDB format
+const toDynamoDBValue = (value) => {
+  if (Array.isArray(value)) {
+    return { L: value.map((item) => toDynamoDBValue(item)) };
+  } else if (typeof value === "object" && value !== null) {
+    return {
+      M: Object.entries(value).reduce((acc, [key, val]) => {
+        acc[key] = toDynamoDBValue(val);
+        return acc;
+      }, {}),
+    };
+  } else if (typeof value === "string") {
+    return { S: value };
+  } else if (typeof value === "number") {
+    return { N: value.toString() };
+  } else if (typeof value === "boolean") {
+    return { BOOL: value };
+  } else {
+    return { S: JSON.stringify(value) };
+  }
+};
+
 exports.handler = async (event) => {
   try {
     // Call the tokenChecker function to validate the token
@@ -34,20 +56,6 @@ exports.handler = async (event) => {
       );
     }
 
-    // Destructure project after validation with joi
-    const {
-      id,
-      lastEdited,
-      name,
-      logo,
-      description,
-      longDescription,
-      skills,
-      website,
-      github,
-      images,
-    } = project;
-
     // Check if user exists
     const user = await client.send(
       new GetItemCommand({
@@ -65,35 +73,27 @@ exports.handler = async (event) => {
 
     // Find the index of the project with the same id
     const projectIndex = existingProjects.findIndex(
-      (proj) => proj.M.id.S === id
+      (proj) => proj.M.id.S === project.id
     );
+
+    // Convert the project to DynamoDB format
+    const dynamoProject = {
+      M: Object.entries(project).reduce((acc, [key, value]) => {
+        acc[key] = toDynamoDBValue(value);
+        return acc;
+      }, {}),
+    };
 
     if (projectIndex !== -1) {
       // Update the existing project
-      const updatedProject = {
-        M: {
-          id: { S: id },
-          lastEdited: { S: new Date().toISOString() }, // Ensure lastEdited is updated
-          name: { S: name },
-          logo: { S: logo },
-          description: { S: description },
-          longDescription: { S: longDescription },
-          skills: { L: skills.map((skill) => ({ S: skill })) },
-          website: { S: website },
-          github: { S: github },
-          images: { L: images.map((image) => ({ S: image })) },
-        },
-      };
-
-      // Update the project in the user's list of projects
-      existingProjects[projectIndex] = updatedProject; // Modify the existing project
+      existingProjects[projectIndex] = dynamoProject;
 
       const updateParams = {
         TableName: "usersTable",
         Key: { email: { S: email } },
         UpdateExpression: "SET projects = :updatedProjects",
         ExpressionAttributeValues: {
-          ":updatedProjects": { L: existingProjects }, // Set the entire updated list
+          ":updatedProjects": { L: existingProjects },
         },
         ReturnValues: "UPDATED_NEW",
       };
@@ -102,25 +102,10 @@ exports.handler = async (event) => {
 
       return createResponse(200, "Project updated successfully", {
         email,
-        project: updatedProject,
+        project: dynamoProject,
       });
     } else {
       // Append the new project if it doesn't exist
-      const newProject = {
-        M: {
-          id: { S: id },
-          lastEdited: { S: lastEdited },
-          name: { S: name },
-          logo: { S: logo },
-          description: { S: description },
-          longDescription: { S: longDescription },
-          skills: { L: skills.map((skill) => ({ S: skill })) },
-          website: { S: website },
-          github: { S: github },
-          images: { L: images.map((image) => ({ S: image })) },
-        },
-      };
-
       const updateParams = {
         TableName: "usersTable",
         Key: { email: { S: email } },
@@ -128,7 +113,7 @@ exports.handler = async (event) => {
           "SET projects = list_append(if_not_exists(projects, :emptyList), :newProject)",
         ExpressionAttributeValues: {
           ":emptyList": { L: [] },
-          ":newProject": { L: [newProject] },
+          ":newProject": { L: [dynamoProject] },
         },
         ReturnValues: "UPDATED_NEW",
       };
@@ -137,7 +122,7 @@ exports.handler = async (event) => {
 
       return createResponse(201, "Project added successfully to user", {
         email,
-        project: newProject,
+        project: dynamoProject,
       });
     }
   } catch (error) {
