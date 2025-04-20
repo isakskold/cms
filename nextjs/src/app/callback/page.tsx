@@ -13,12 +13,9 @@ export default function CallbackPage() {
   const { setTokenData } = useAuthStore();
 
   useEffect(() => {
-    // Logout function
     const handleLogout = async () => {
-      console.log("Logging out user...");
       try {
         await logout();
-
         setTokenData(null);
         const cognitoLogoutUrl = `${
           process.env.NEXT_PUBLIC_COGNITO_DOMAIN
@@ -29,15 +26,13 @@ export default function CallbackPage() {
         )}`;
         window.location.href = cognitoLogoutUrl;
       } catch (error) {
-        console.error("Logout failed:", error);
+        setError("Logout failed");
       }
     };
 
-    // Ensure the code runs only in the client-side environment
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
-      console.log("Authorization code:", code);
 
       if (!code) {
         setError("Authorization code not found in the URL.");
@@ -49,16 +44,15 @@ export default function CallbackPage() {
         try {
           const data = await exchangeCode(code);
           setTokenData({ access_token: data.access_token });
-          console.log("Refresh token cookie set, and access token returned");
-
           setLoading(false);
-          router.push("/dashboard"); // Redirect to dashboard or desired page
+          router.push("/dashboard");
         } catch (error: unknown) {
-          console.error(error);
-          setError("Failed to retrieve tokens.");
+          setError(
+            `Failed to retrieve tokens: ${
+              error instanceof Error ? error.message : String(error)
+            }`
+          );
           setLoading(false);
-
-          handleLogout();
         }
       };
 
@@ -72,7 +66,26 @@ export default function CallbackPage() {
         <h2 className="text-2xl font-bold text-center">Processing Login</h2>
 
         {loading && <p className="text-blue-500">Please wait...</p>}
-        {error && <p className="text-red-500">{error}</p>}
+        {error && (
+          <div className="flex flex-col gap-2">
+            <p className="text-red-500">{error}</p>
+            <button
+              onClick={() => {
+                const cognitoLogoutUrl = `${
+                  process.env.NEXT_PUBLIC_COGNITO_DOMAIN
+                }/logout?client_id=${
+                  process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
+                }&logout_uri=${encodeURIComponent(
+                  process.env.NEXT_PUBLIC_APP_DOMAIN as string
+                )}`;
+                window.location.href = cognitoLogoutUrl;
+              }}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

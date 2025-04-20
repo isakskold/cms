@@ -17,9 +17,9 @@ export default function Login() {
     // Redirect to Cognito hosted UI
     const cognitoDomain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN;
     const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
-    const redirectUri = `${window.location.origin}/auth/callback`;
+    const redirectUri = process.env.NEXT_PUBLIC_APP_DOMAIN + "/callback";
 
-    const authUrl = `${cognitoDomain}/oauth2/authorize?client_id=${clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${redirectUri}`;
+    const authUrl = `${cognitoDomain}/login?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=email+openid+phone`;
 
     window.location.href = authUrl;
   }, [tokenData, router]);

@@ -1,26 +1,31 @@
 import axios from "axios";
 
 const exchangeCode = async (code: string) => {
-  const url =
-    "https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/user/setRefreshToken";
+  const tokenUrl = `${process.env.NEXT_PUBLIC_COGNITO_DOMAIN}/oauth2/token`;
+  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID as string;
+  const redirectUri =
+    (process.env.NEXT_PUBLIC_APP_DOMAIN as string) + "/callback";
+
+  const params = new URLSearchParams();
+  params.append("grant_type", "authorization_code");
+  params.append("client_id", clientId);
+  params.append("code", code);
+  params.append("redirect_uri", redirectUri);
 
   try {
-    const response = await axios.post(url, { code }, { withCredentials: true });
-
-    // You can process the response here if needed
-    console.log("Response from API:", response.data);
-    return response.data; // Or whatever you need to return from the API
+    const response = await axios.post(tokenUrl, params, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+    return response.data;
   } catch (error: unknown) {
-    // Type guard to check if the error is an AxiosError
     if (axios.isAxiosError(error) && error.response) {
-      // If there's a message in the error response, set that as the error
-      if (error.response.data && error.response.data.message) {
-        throw new Error(error.response.data.message); // Throw error message from the response
+      if (error.response.data && error.response.data.error_description) {
+        throw new Error(error.response.data.error_description);
       }
     }
-
-    // Throw a general error with a fallback message
-    throw new Error("An error occurred exchanging code for tokens");
+    throw new Error("Failed to exchange authorization code");
   }
 };
 
