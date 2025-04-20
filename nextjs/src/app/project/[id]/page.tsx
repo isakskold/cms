@@ -1,12 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import SaveOrDiscardBtn from "@/components/ui/buttons/SaveOrDiscardBtn";
 import useProjectStore from "@/stores/project/useProjectStore";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import EditFields from "@/components/ui/edit/EditFields";
 import createProject from "@/requests/project/createOrUpdateProject";
-import DeleteProjectBtn from "./DeleteProjectBtn";
 import Header from "@/components/ui/edit/Header";
 import formatDateTime from "@/components/utils/formatTime";
 import { Project, CustomField } from "@/types/data/project";
@@ -91,7 +89,7 @@ const ProjectPage = () => {
           value !== undefined &&
           value !== null
         ) {
-          const fieldType = determineFieldType(key, value);
+          const fieldType = determineFieldType(value);
           projectFields.push({
             id: `field-${key}`,
             name: key.charAt(0).toUpperCase() + key.slice(1),
@@ -107,10 +105,19 @@ const ProjectPage = () => {
   }, [id, isHydrated, projects, projectId, setInputProject]);
 
   // Helper function to determine field type
-  const determineFieldType = (key: string, value: any): CustomField["type"] => {
-    if (key === "images") return "image";
-    if (Array.isArray(value)) return "multiselect";
-    if (typeof value === "string" && value.includes("\n")) return "textarea";
+  const determineFieldType = (value: unknown): CustomField["type"] => {
+    if (Array.isArray(value)) {
+      return "multiselect";
+    }
+    if (typeof value === "string") {
+      if (value.includes("\n")) {
+        return "textarea";
+      }
+      return "input";
+    }
+    if (typeof value === "object" && value !== null && "type" in value) {
+      return (value as { type: CustomField["type"] }).type;
+    }
     return "input";
   };
 
@@ -218,7 +225,7 @@ const ProjectPage = () => {
           value !== undefined &&
           value !== null
         ) {
-          const fieldType = determineFieldType(key, value);
+          const fieldType = determineFieldType(value);
           projectFields.push({
             id: `field-${key}`,
             name: key.charAt(0).toUpperCase() + key.slice(1),

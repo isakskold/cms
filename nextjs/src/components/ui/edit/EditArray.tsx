@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import useProjectStore from "@/stores/project/useProjectStore";
+import Image from "next/image";
 
 interface Props {
   label: "skills" | "images";
@@ -60,9 +61,11 @@ const EditArray: React.FC<Props> = ({ label }) => {
             className="flex justify-between items-center border p-2 rounded"
           >
             {label === "images" ? (
-              <img
+              <Image
                 src={item}
                 alt={`Preview ${index}`}
+                width={40}
+                height={40}
                 className="h-10 w-10 object-cover rounded"
               />
             ) : (

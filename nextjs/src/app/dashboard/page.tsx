@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import Link from "next/link";
 import useProjectStore from "@/stores/project/useProjectStore";
 import formatDateTime from "@/components/utils/formatTime";

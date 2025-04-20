@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { CustomField } from "@/types/data/project";
+import Image from "next/image";
 
 interface Props {
   fields: CustomField[];
@@ -112,7 +113,7 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
     if (fields.length === 0) {
       onUpdate(defaultFields);
     }
-  }, [fields.length, onUpdate]);
+  }, [fields.length, onUpdate, defaultFields]);
 
   const fieldTypes = [
     { label: "Text Input", value: "input" },
@@ -485,12 +486,15 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                             key={value}
                             className="group relative rounded-lg overflow-hidden bg-gray-100 aspect-video"
                           >
-                            <img
+                            <Image
                               src={value}
                               alt="Preview"
+                              width={300}
+                              height={200}
                               className="w-full h-full object-cover"
                               onError={(e) => {
-                                (e.target as HTMLImageElement).src =
+                                const target = e.target as HTMLImageElement;
+                                target.src =
                                   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e5e7eb'%3E%3Cpath d='M4 5h16v14H4V5zm2 2v10h12V7H6zm5 2h2v6h-2V9zm-3 2h2v4H8v-4zm6 0h2v4h-2v-4z'/%3E%3C/svg%3E";
                               }}
                             />
