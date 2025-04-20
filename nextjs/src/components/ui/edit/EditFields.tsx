@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { CustomField } from "@/types/data/project";
 import Image from "next/image";
 
@@ -92,21 +92,24 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const [selectedTemplate, setSelectedTemplate] = useState("");
 
-  // Define default fields
-  const defaultFields: CustomField[] = [
-    {
-      id: "field-name",
-      name: "Name",
-      type: "input" as const,
-      value: "",
-    },
-    {
-      id: "field-description",
-      name: "Description",
-      type: "input" as const,
-      value: "",
-    },
-  ];
+  // Define default fields using useMemo
+  const defaultFields = useMemo<CustomField[]>(
+    () => [
+      {
+        id: "field-name",
+        name: "Name",
+        type: "input" as const,
+        value: "",
+      },
+      {
+        id: "field-description",
+        name: "Description",
+        type: "input" as const,
+        value: "",
+      },
+    ],
+    []
+  );
 
   // Initialize fields with defaults if empty
   useEffect(() => {
@@ -340,7 +343,10 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
               <select
                 value={newField.type || ""}
                 onChange={(e) =>
-                  setNewField({ ...newField, type: e.target.value as any })
+                  setNewField({
+                    ...newField,
+                    type: e.target.value as CustomField["type"],
+                  })
                 }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               >
