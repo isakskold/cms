@@ -2,9 +2,11 @@
 import Link from "next/link";
 import useProjectStore from "@/stores/project/useProjectStore";
 import formatDateTime from "@/components/utils/formatTime";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const { projects, isHydrated } = useProjectStore();
+  const router = useRouter();
 
   if (!isHydrated) {
     return (
@@ -120,37 +122,50 @@ export default function Dashboard() {
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center min-h-[80vh] py-16">
-          <h1 className="text-5xl font-bold text-gray-800 tracking-tight mb-4 text-center">
-            Create Your First Project
-          </h1>
-          <p className="text-2xl text-gray-600 font-medium mb-12 text-center max-w-2xl">
-            Get started by creating a new project to showcase your work
-          </p>
-          <Link
-            href="/project/new"
-            className="inline-flex items-center px-8 py-4 bg-blue-600 text-white text-xl font-semibold rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 group shadow-lg hover:shadow-xl"
-          >
-            <span className="flex items-center">
-              <span className="bg-blue-500 rounded-full p-1.5 mr-3 group-hover:bg-blue-400 transition-colors duration-200">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-              </span>
-              Create Project
-            </span>
-          </Link>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+          <div className="max-w-md mx-auto">
+            <div className="mb-8">
+              <svg
+                className="w-24 h-24 mx-auto text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              No Projects Yet
+            </h2>
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+              Start by creating your first project. You can add custom fields,
+              images, and more to showcase your work.
+            </p>
+            <button
+              onClick={() => router.push("/project/new")}
+              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm transition-all duration-200"
+            >
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              Create New Project
+            </button>
+          </div>
         </div>
       )}
     </div>
