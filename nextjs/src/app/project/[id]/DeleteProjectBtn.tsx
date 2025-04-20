@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import deleteProject from "@/requests/project/deleteProject";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import useProjectStore from "@/stores/project/useProjectStore";
-import Loading from "@/components/utils/loading";
 
 interface Props {
   projectId: string;
