@@ -1,51 +1,41 @@
 "use client";
 
-import { useEffect } from "react";
+import { LogOut } from "lucide-react";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import useSidebarStore from "@/stores/useSidebarStore";
-import logout from "@/requests/user/logout";
 
-const Logout: React.FC = () => {
-  const { setTokenData, isLoggedIn } = useAuthStore();
+const Logout = () => {
+  const { setTokenData } = useAuthStore();
   const { setSidebar } = useSidebarStore();
 
-  useEffect(() => {
-    console.log("Updated isLoggedIn:", isLoggedIn);
-  }, [isLoggedIn]); // Runs every time isLoggedIn changes
-
   const handleLogout = async () => {
-    console.log("Logging out user...");
+    // Clear the token data
+    setTokenData(null);
 
-    try {
-      // Call the logout API request to invalidate the session
-      await logout();
+    // Construct the Cognito logout URL
+    const cognitoLogoutUrl = `${
+      process.env.NEXT_PUBLIC_COGNITO_DOMAIN
+    }/logout?client_id=${
+      process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
+    }&logout_uri=${encodeURIComponent(
+      process.env.NEXT_PUBLIC_APP_DOMAIN as string
+    )}`;
 
-      // After the API call succeeds, clear the token data and redirect to Cognito logout
-      setTokenData(null);
+    // Close the sidebar
+    setSidebar(false);
 
-      const cognitoLogoutUrl = `${
-        process.env.NEXT_PUBLIC_COGNITO_DOMAIN
-      }/logout?client_id=${
-        process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID
-      }&logout_uri=${encodeURIComponent(
-        process.env.NEXT_PUBLIC_APP_DOMAIN as string
-      )}`;
-
-      window.location.href = cognitoLogoutUrl;
-
-      setSidebar(false); // Optionally close the sidebar
-    } catch (error) {
-      console.error("Logout failed:", error);
-      // Handle any errors during logout (e.g., show a message to the user)
-    }
+    // Redirect to Cognito logout
+    window.location.href = cognitoLogoutUrl;
   };
 
   return (
     <button
       onClick={handleLogout}
-      className=" transition-shadow duration-300 ease-in-out p-2 text-slate-100 tracking-widest text-lg font-bold bg-purple-950 rounded-lg shadow-lg hover:shadow-red-600"
+      className="group flex items-center gap-3 px-6 py-3 rounded-lg text-white/80 hover:text-white transition-all duration-300 relative overflow-hidden"
     >
-      Log-out
+      <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-red-600/10 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-lg" />
+      <LogOut className="w-6 h-6 relative z-10" />
+      <span className="relative z-10 text-lg font-medium">Logout</span>
     </button>
   );
 };

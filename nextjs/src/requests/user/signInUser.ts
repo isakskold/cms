@@ -12,9 +12,6 @@ const signInUser = async (email: string, password: string) => {
 
     return response.data; // Returns the response data from the API
   } catch (error: unknown) {
-    // Log the error for debugging purposes
-    console.error("Error during sign in:", error);
-
     // If it's an Axios error, we can safely access the response
     if (axios.isAxiosError(error) && error.response) {
       // If there's a message in the error response, set that as the error

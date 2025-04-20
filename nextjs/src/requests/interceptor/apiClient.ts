@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
+import { useRouter } from "next/router";
 
 // Create axios instance
 const apiClient = axios.create({
@@ -30,6 +31,7 @@ const processQueue = (error: unknown, token: string | null) => {
 
   failedQueue = []; // Clear the failed queue
 };
+
 // Add response interceptor
 apiClient.interceptors.response.use(
   function (response) {
@@ -37,105 +39,43 @@ apiClient.interceptors.response.use(
     return response;
   },
   async function (error) {
-    // Handle refreshing token if error is 401
-    if (error.response?.status === 401) {
-      console.log("Interceptor activated on 401 error");
+    const originalRequest = error.config;
 
-      // Get refresh token from the store
-      const { setTokenData } = useAuthStore.getState();
+    // If the error status is 401 and there's no originalRequest._retry flag,
+    // it means the token has expired and we need to refresh it
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
 
-      if (!isRefreshing) {
-        // Check if we're not already refreshing the token
-        isRefreshing = true;
-        try {
-          // Make a call to the refresh token route
-          console.log("Calling refresh token route");
-
-          interface TokenData {
-            accessToken: string;
+      try {
+        // Call the refresh token endpoint
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/user/refresh-token`,
+          {},
+          {
+            withCredentials: true,
           }
+        );
 
-          let newTokenData: TokenData;
+        const newTokenData = response.data;
 
-          try {
-            const response = await axios.post(
-              "https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/user/refreshToken", // Backend refresh token route
-              {}, // Request body (empty in this case)
-              { withCredentials: true }
-            );
-            newTokenData = response.data.data;
-            console.log("New token data: ", newTokenData);
-          } catch (refreshError) {
-            console.error("Error refreshing token:", refreshError);
-            // Logout and redirect to home if refresh fails
-            const logout = useAuthStore.getState().logout;
-            logout(); // This will handle logging out the user
+        // Update the token in the store
+        const { setTokenData } = useAuthStore.getState();
+        setTokenData(newTokenData);
 
-            console.log("User logged out");
-
-            return Promise.reject("Failed to refresh token. User logged out.");
-          }
-
-          console.log("New token data: ", newTokenData);
-
-          // Preserve the previous refresh token if it exists
-          const updatedTokenData = {
-            access_token: newTokenData.accessToken as string,
-          };
-
-          // Update the token data in the store and wait for it to complete
-          await new Promise<void>((resolve) => {
-            setTokenData(updatedTokenData); // Update state
-            resolve(); // Resolve the promise to proceed with the next logic
-          });
-
-          // Retry the original request with the new access token
-          console.log(
-            "Retrying with new access token:",
-            newTokenData.accessToken
-          );
-          error.config.headers[
-            "Authorization"
-          ] = `Bearer ${newTokenData.accessToken}`;
-          console.log("Request headers before retry:", error.config.headers);
-
-          processQueue(null, newTokenData.accessToken);
-
-          return axios(error.config);
-        } catch (refreshError) {
-          console.error("Error refreshing token:", refreshError);
-
-          // Call the logout function from your auth store
-          const logout = useAuthStore.getState().logout;
-          logout(); // This will handle logging out the use
-
-          console.log("User logged out");
-
-          // Reject all failed requests
-          processQueue(refreshError, null);
-
-          // Stop the flow and reject the error
-          return Promise.reject(
-            "Refresh token is invalid, user logged out and data cleared"
-          );
-        } finally {
-          isRefreshing = false; // Reset the flag once the refresh process is complete
-        }
-      }
-      // If there's no refresh token or refresh is already in progress, reject the request
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({
-            resolve: (token: string) => {
-              error.config.headers["Authorization"] = `Bearer ${token}`;
-              resolve(axios(error.config));
-            },
-            reject: (err: unknown) => reject(err),
-          });
-        });
+        // Retry the original request with the new token
+        originalRequest.headers.Authorization = `Bearer ${newTokenData.access_token}`;
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        // If refresh token fails, log the user out
+        const { setTokenData } = useAuthStore.getState();
+        setTokenData(null);
+        const router = useRouter();
+        router.push("/");
+        return Promise.reject(refreshError);
       }
     }
 
+    // For other errors, just reject the promise
     return Promise.reject(error);
   }
 );

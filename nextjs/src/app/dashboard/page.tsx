@@ -3,10 +3,16 @@ import Link from "next/link";
 import useProjectStore from "@/stores/project/useProjectStore";
 import formatDateTime from "@/components/utils/formatTime";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Dashboard() {
   const { projects, isHydrated } = useProjectStore();
   const router = useRouter();
+
+  const handleNewProject = () => {
+    const newId = uuidv4();
+    router.push(`/project/${newId}`);
+  };
 
   if (!isHydrated) {
     return (
@@ -31,8 +37,8 @@ export default function Dashboard() {
                   total
                 </p>
               </div>
-              <Link
-                href="/project/new"
+              <button
+                onClick={handleNewProject}
                 className="shrink-0 inline-flex items-center px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 group"
               >
                 <span className="flex items-center">
@@ -54,7 +60,7 @@ export default function Dashboard() {
                   </span>
                   Create New Project
                 </span>
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -147,7 +153,7 @@ export default function Dashboard() {
               images, and more to showcase your work.
             </p>
             <button
-              onClick={() => router.push("/project/new")}
+              onClick={handleNewProject}
               className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm transition-all duration-200"
             >
               <svg

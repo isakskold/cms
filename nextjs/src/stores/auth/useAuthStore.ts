@@ -44,7 +44,6 @@ export const useAuthStore = create<AuthStore>()(
               useProjectStore.getState().setProjects([]);
             }
           } catch (error) {
-            console.error("Error fetching projects:", error);
             useProjectStore.getState().setProjects([]);
           }
         } else {

@@ -9,11 +9,8 @@ const deleteProject = async (token: string, projectId: string) => {
       },
     });
 
-    console.log("Project deleted successfully:", response.data);
     return response;
   } catch (error: unknown) {
-    console.error("Error during project deletion:", error);
-
     // Type guard to check if the error is an Axios error
     if (axios.isAxiosError(error) && error.response) {
       // If there's a message in the error response, set that as the error

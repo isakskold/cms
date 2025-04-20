@@ -13,31 +13,45 @@ const Sidebar: React.FC<Props> = () => {
   const options = ["Dashboard", "Settings", "Help"];
   const { isOpen } = useSidebarStore();
 
-  // If sidebar is not open, return null
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 left-0 flex flex-col overflow-auto items-center w-[100vw] h-full bg-blue-900">
-      <div className="fixed top-0 right-0">
-        <Close />
+    <>
+      {/* Backdrop with blur effect */}
+      <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-[9998]" />
+
+      {/* Fullscreen menu */}
+      <div className="fixed inset-0 flex flex-col items-center justify-center z-[9999]">
+        <div className="absolute top-8 right-8">
+          <Close />
+        </div>
+
+        <div className="flex flex-col items-center space-y-8">
+          <h2 className="text-4xl font-bold text-white mb-12">Menu</h2>
+
+          {/* Menu container with background */}
+          <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-800/50 shadow-2xl">
+            <nav className="flex flex-col items-center space-y-6">
+              {options.map((option, index) => {
+                const route = `/${option.toLowerCase()}`;
+                return (
+                  <Option
+                    key={index}
+                    label={option}
+                    link={route}
+                    className="text-2xl font-medium"
+                  />
+                );
+              })}
+            </nav>
+
+            <div className="mt-12 pt-8 border-t border-white/10">
+              <Logout />
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div
-        className="flex flex-col w-full"
-        style={{
-          marginTop: "max(10vh, 50px)",
-          marginBottom: "max(10vh, 50px)",
-        }}
-      >
-        {options.map((option, index) => {
-          const route = `/${option.toLowerCase()}`;
-
-          return <Option key={index} label={option} link={route} />;
-        })}
-      </div>
-
-      <Logout />
-    </div>
+    </>
   );
 };
 

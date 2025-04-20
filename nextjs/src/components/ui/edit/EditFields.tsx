@@ -392,7 +392,7 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
             {fields.map((field) => (
               <div
                 key={field.id}
-                className="bg-gray-50 p-4 rounded-lg space-y-2 relative"
+                className="bg-gray-50 p-4 rounded-lg space-y-2 relative z-0"
               >
                 <div className="flex justify-between items-start">
                   <label className="block text-sm font-medium text-gray-700">

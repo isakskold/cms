@@ -21,8 +21,6 @@ const fetchProjects = async (token: string) => {
     // If no valid projects found, return empty array
     return [];
   } catch (error: unknown) {
-    console.error("Error fetching projects:", error);
-
     if (axios.isAxiosError(error) && error.response) {
       if (error.response.data && error.response.data.message) {
         throw new Error(error.response.data.message);

@@ -25,14 +25,7 @@ const Overview: React.FC = () => {
         try {
           setLoading(true);
           const response = await fetchProjects(access_token as string);
-          console.log("Response from fetchProjects:", response);
-          console.log("Projects before setting in store:", response);
           setProjects(response);
-          console.log(
-            "Projects after setting in store:",
-            useProjectStore.getState().projects
-          );
-          console.log("Initialized store with fetched data");
         } catch (error) {
           console.error("Error fetching projects:", error);
         } finally {

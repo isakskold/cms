@@ -5,26 +5,26 @@ interface Props {
   label: string;
   link: string;
   className?: string;
+  icon?: React.ReactNode;
 }
 
-const Option: React.FC<Props> = ({ label, link, className }) => {
-  const { setSidebar } = useSidebarStore(); // Access the store's toggleSidebar action
+const Option: React.FC<Props> = ({ label, link, className, icon }) => {
+  const { setSidebar } = useSidebarStore();
 
   const handleClick = () => {
-    setSidebar(false); // Toggle the sidebar visibility
+    setSidebar(false);
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className="transition-colors transition-text duration-300 ease-in-out w-full hover:bg-sky-950 hover:shadow-lg"
-    >
+    <div onClick={handleClick} className="group relative w-full">
       <Link
         href={link}
         passHref
-        className={`${className} py-5 block text-center text-white font-semibold text-2xl`}
+        className={`${className} relative py-3 px-6 text-gray-300 hover:text-white transition-all duration-300 w-full text-center`}
       >
-        {label}
+        {icon}
+        <span className="relative z-10">{label}</span>
+        <div className="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-lg" />
       </Link>
     </div>
   );

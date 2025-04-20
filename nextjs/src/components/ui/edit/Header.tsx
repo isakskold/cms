@@ -12,9 +12,11 @@ const Header: React.FC<Props> = ({ projectExist }) => {
   }
 
   return (
-    <h1 className="text-4xl text-center font-semibold text-white mb-14">
-      {headerText}
-    </h1>
+    <div className="mb-8">
+      <h1 className="text-4xl text-center font-semibold text-white">
+        {headerText}
+      </h1>
+    </div>
   );
 };
 

@@ -12,8 +12,6 @@ const createProject = async (token: string, project: Project) => {
 
     return response.data;
   } catch (error: unknown) {
-    console.error("Error during project creation:", error);
-
     // If it's an Axios error, we can safely access the response
     if (axios.isAxiosError(error) && error.response) {
       // If there's a message in the error response, set that as the error

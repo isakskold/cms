@@ -9,6 +9,7 @@ import deleteProject from "@/requests/project/deleteProject";
 import Header from "@/components/ui/edit/Header";
 import formatDateTime from "@/components/utils/formatTime";
 import { Project, CustomField } from "@/types/data/project";
+import { v4 as uuidv4 } from "uuid";
 
 const ProjectPage = () => {
   const { id } = useParams();
@@ -31,16 +32,23 @@ const ProjectPage = () => {
   const [projectExists, setProjectExists] = useState<boolean>(false);
   const [fields, setFields] = useState<CustomField[]>([]);
 
-  // Initialize project data when the store is hydrated
   useEffect(() => {
     if (!isHydrated) return;
 
+    // Handle "new" project case
+    if (projectId === "new") {
+      const newId = uuidv4();
+      router.replace(`/project/${newId}`);
+      return;
+    }
+
     const foundProject = projects.find((p) => p.id === projectId);
-    const exists = Boolean(foundProject);
+    const exists = !!foundProject;
     setProjectExists(exists);
     setProject(foundProject);
 
-    if (!foundProject) {
+    // Initialize new project (either truly new or not found)
+    if (!foundProject || projectId === "new") {
       // Initialize with just name and description for new projects
       const initialFields = [
         {
@@ -59,7 +67,7 @@ const ProjectPage = () => {
 
       setFields(initialFields);
       setInputProject({
-        id: id as string,
+        id: projectId as string,
         lastEdited: new Date().toISOString(),
         name: "",
         description: "",
@@ -88,6 +96,7 @@ const ProjectPage = () => {
           key !== "name" &&
           key !== "description" &&
           key !== "lastEdited" &&
+          !key.endsWith("_type") &&
           value !== undefined &&
           value !== null
         ) {
@@ -165,7 +174,6 @@ const ProjectPage = () => {
       updatedProject[`${fieldName}_type`] = field.type;
     });
 
-    console.log("Updating input project with new values:", updatedProject);
     setInputProject(updatedProject);
     setFields(updatedFields);
   };
@@ -174,7 +182,6 @@ const ProjectPage = () => {
   const handleSave = async () => {
     try {
       if (inputProject) {
-        console.log("Saving project with final input state:", inputProject);
         await createProject(access_token as string, inputProject);
         setSuccessMsg("Project saved...");
         setSuccess(true);
@@ -196,10 +203,6 @@ const ProjectPage = () => {
 
   const handleDiscard = () => {
     if (project) {
-      console.log(
-        "Discarding changes, resetting to original project:",
-        project
-      );
       setInputProject(project);
       // Reset fields to match project
       const projectFields: CustomField[] = [
@@ -224,6 +227,7 @@ const ProjectPage = () => {
           key !== "name" &&
           key !== "description" &&
           key !== "lastEdited" &&
+          !key.endsWith("_type") &&
           value !== undefined &&
           value !== null
         ) {
@@ -246,10 +250,6 @@ const ProjectPage = () => {
         name: "",
         description: "",
       };
-      console.log(
-        "Discarding changes, resetting to empty project:",
-        emptyProject
-      );
       setInputProject(emptyProject);
       setFields([
         {
@@ -271,10 +271,12 @@ const ProjectPage = () => {
   return (
     <div className="flex flex-col justify-between flex-1 p-4 max-w-5xl mx-auto">
       <div className="flex flex-col">
-        <Header projectExist={projectExists} />
+        <div className="relative z-[100]">
+          <Header projectExist={projectExists} />
+        </div>
 
         {/* Project Info Section */}
-        <div className="bg-white rounded-lg shadow-sm mb-8">
+        <div className="bg-white rounded-lg shadow-sm mb-8 relative z-[1]">
           <div className="p-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">
               Project Information
@@ -336,7 +338,7 @@ const ProjectPage = () => {
         </div>
 
         {/* Fields Section */}
-        <div className="bg-blue-50 rounded-lg border-2 border-blue-200 mb-8">
+        <div className="bg-blue-50 rounded-lg border-2 border-blue-200 mb-8 relative z-[1]">
           <div className="p-6">
             <h2 className="text-2xl font-bold mb-6 text-blue-800 flex items-center gap-2">
               <svg
@@ -365,7 +367,7 @@ const ProjectPage = () => {
         </div>
 
         {success ? (
-          <div className="flex items-center justify-center p-4 mb-8 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex items-center justify-center p-4 mb-8 bg-green-50 border border-green-200 rounded-lg relative z-[1]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6 text-green-500 mr-2"
@@ -385,7 +387,7 @@ const ProjectPage = () => {
             </span>
           </div>
         ) : (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-10">
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-[90]">
             <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-end items-center gap-3">
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <button
@@ -470,8 +472,6 @@ const ProjectPage = () => {
           </div>
         )}
       </div>
-
-      {/* Add padding at the bottom to account for fixed action bar */}
       <div className="h-32" />
     </div>
   );

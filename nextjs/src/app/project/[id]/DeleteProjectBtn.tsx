@@ -25,7 +25,6 @@ const DeleteProjectBtn: React.FC<Props> = ({ projectId, projectExist }) => {
       removeProject(projectId);
       router.push("/dashboard");
     } catch (error) {
-      console.error("Error deleting project:", error);
       alert("Failed to delete project");
       setLoading(false); // Only reset loading if deletion fails
     }

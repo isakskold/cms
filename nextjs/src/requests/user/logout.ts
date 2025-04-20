@@ -7,7 +7,6 @@ const logout = async () => {
   try {
     const response = await axios.post(url, {}, { withCredentials: true });
 
-    console.log("Response from API:", response.data);
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response) {

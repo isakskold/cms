@@ -20,15 +20,21 @@ const MobileHeader: React.FC = () => {
   if (isOpen || pathname === "/") return null;
 
   return (
-    <div className="flex fixed top-0 left-0 w-full justify-between p-2 border-b border-gray-800 bg-sky-900">
+    <div className="flex fixed top-0 left-0 w-full justify-between items-center px-4 py-3 border-b border-gray-700/20 bg-gray-900/80 backdrop-blur-sm shadow-lg z-[999]">
       {/* Conditionally render the back button if the pathname is not "/dashboard" */}
       {pathname !== "/dashboard" && (
-        <button onClick={handleBack} className="mr-4">
-          <FaArrowLeft size={32} />
+        <button
+          onClick={handleBack}
+          className="text-gray-300 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800/50"
+        >
+          <FaArrowLeft size={24} />
         </button>
       )}
-      <button className="ml-auto" onClick={handleCLick}>
-        <FaBars size={32} />
+      <button
+        className="ml-auto text-gray-300 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800/50"
+        onClick={handleCLick}
+      >
+        <FaBars size={24} />
       </button>
     </div>
   );
