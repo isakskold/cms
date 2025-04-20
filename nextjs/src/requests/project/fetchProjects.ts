@@ -8,9 +8,20 @@ const fetchProjects = async (token: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("Projects: ", response.data.data.projects);
+    console.log("Raw response:", response);
+    console.log("Response data:", response.data);
 
-    return response.data.data.projects;
+    // Handle different response structures
+    if (response.data?.data?.projects) {
+      return response.data.data.projects;
+    } else if (response.data?.projects) {
+      return response.data.projects;
+    } else if (Array.isArray(response.data)) {
+      return response.data;
+    }
+
+    // If no valid projects found, return empty array
+    return [];
   } catch (error: unknown) {
     console.error("Error during projects fetch:", error);
 

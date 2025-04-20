@@ -39,11 +39,19 @@ export const useAuthStore = create<AuthStore>()(
             const response = await fetchProjects(tokenData.access_token);
             console.log("Projects fetch response:", response);
 
-            if (response.data && response.data.projects) {
-              console.log("Setting projects in store:", response.data.projects);
+            // Check if response is an array (our projects)
+            if (Array.isArray(response)) {
+              console.log("Setting projects in store:", response);
+              useProjectStore.getState().setProjects(response);
+            } else if (response.data?.projects) {
+              // Fallback for nested structure
+              console.log(
+                "Setting projects from nested response:",
+                response.data.projects
+              );
               useProjectStore.getState().setProjects(response.data.projects);
             } else {
-              console.log("No projects found in response");
+              console.log("No valid projects found in response");
               useProjectStore.getState().setProjects([]);
             }
           } catch (error) {
