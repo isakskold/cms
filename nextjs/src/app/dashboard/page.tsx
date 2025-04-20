@@ -123,7 +123,7 @@ export default function Dashboard() {
         </>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-          <div className="max-w-md mx-auto">
+          <div className="max-w-md mx-auto bg-white rounded-lg shadow-sm p-8 border border-gray-100">
             <div className="mb-8">
               <svg
                 className="w-24 h-24 mx-auto text-gray-400"
