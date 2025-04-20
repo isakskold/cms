@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 
 export default function Settings() {
-  const { tokenData, logout } = useAuthStore();
+  const { logout } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
   return (
