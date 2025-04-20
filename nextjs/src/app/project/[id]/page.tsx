@@ -118,6 +118,14 @@ const ProjectPage = () => {
   // Helper function to determine field type
   const determineFieldType = (value: unknown): CustomField["type"] => {
     if (Array.isArray(value)) {
+      // Check if the array contains image URLs
+      if (
+        value.length > 0 &&
+        typeof value[0] === "string" &&
+        (value[0].startsWith("http://") || value[0].startsWith("https://"))
+      ) {
+        return "image";
+      }
       return "multiselect";
     }
     if (typeof value === "string") {
