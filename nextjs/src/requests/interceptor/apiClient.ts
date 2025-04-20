@@ -7,31 +7,6 @@ const apiClient = axios.create({
   baseURL: "https://ny2wtm2guh.execute-api.eu-north-1.amazonaws.com/",
 });
 
-let isRefreshing = false; // Flag to track if refresh token is in progress
-
-interface Request {
-  resolve: (value: string) => void;
-  reject: (reason: unknown) => void;
-}
-
-let failedQueue: Request[] = []; // Queue to store requests that need to be retried
-
-const processQueue = (error: unknown, token: string | null) => {
-  failedQueue.forEach((request: Request) => {
-    if (token) {
-      request.resolve(token); // Resolve requests with the new token
-    } else {
-      if (error instanceof Error) {
-        request.reject(error); // Reject requests if refresh failed
-      } else {
-        request.reject(new Error("Unknown error")); // Handle non-Error types
-      }
-    }
-  });
-
-  failedQueue = []; // Clear the failed queue
-};
-
 // Add response interceptor
 apiClient.interceptors.response.use(
   function (response) {

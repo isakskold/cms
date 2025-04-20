@@ -113,7 +113,7 @@ const ProjectPage = () => {
       setFields(projectFields);
       setInputProject(foundProject);
     }
-  }, [id, isHydrated, projects, projectId, setInputProject]);
+  }, [id, isHydrated, projects, projectId, setInputProject, router]);
 
   // Helper function to determine field type
   const determineFieldType = (value: unknown): CustomField["type"] => {

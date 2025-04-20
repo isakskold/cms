@@ -55,11 +55,19 @@ export const useAuthStore = create<AuthStore>()(
       isHydrated: false,
 
       logout: () => {
-        set({
-          tokenData: null,
-          isLoggedIn: false,
-        });
-        useProjectStore.getState().setProjects([]);
+        try {
+          set({
+            tokenData: null,
+            isLoggedIn: false,
+          });
+          useProjectStore.getState().setProjects([]);
+        } catch {
+          set({
+            tokenData: null,
+            isLoggedIn: false,
+          });
+          useProjectStore.getState().setProjects([]);
+        }
       },
     }),
     {

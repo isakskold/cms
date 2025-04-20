@@ -18,15 +18,13 @@ const DeleteProjectBtn: React.FC<Props> = ({ projectId, projectExist }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleDeletion = async () => {
+  const handleDelete = async () => {
     try {
-      setLoading(true);
       await deleteProject(access_token as string, projectId);
       removeProject(projectId);
       router.push("/dashboard");
-    } catch (error) {
+    } catch {
       alert("Failed to delete project");
-      setLoading(false); // Only reset loading if deletion fails
     }
   };
 
@@ -38,7 +36,7 @@ const DeleteProjectBtn: React.FC<Props> = ({ projectId, projectExist }) => {
   return (
     <button
       className="px-4 w-fit py-2 text-white rounded  bg-red-500 hover:bg-red-700"
-      onClick={handleDeletion}
+      onClick={handleDelete}
     >
       Delete Project
     </button>
