@@ -5,6 +5,7 @@ import useProjectStore from "@/stores/project/useProjectStore";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import EditFields from "@/components/ui/edit/EditFields";
 import createProject from "@/requests/project/createOrUpdateProject";
+import deleteProject from "@/requests/project/deleteProject";
 import Header from "@/components/ui/edit/Header";
 import formatDateTime from "@/components/utils/formatTime";
 import { Project, CustomField } from "@/types/data/project";
@@ -20,6 +21,7 @@ const ProjectPage = () => {
     setInputProject,
     addProject,
     isHydrated,
+    removeProject,
   } = useProjectStore();
   const { access_token } = useAuthStore().tokenData || {};
 
@@ -429,14 +431,20 @@ const ProjectPage = () => {
               </div>
               {projectExists && (
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     if (
                       window.confirm(
                         "Are you sure you want to delete this project? This action cannot be undone."
                       )
                     ) {
-                      // Call your delete function here
-                      router.push("/dashboard");
+                      try {
+                        await deleteProject(access_token as string, projectId);
+                        removeProject(projectId);
+                        router.push("/dashboard");
+                      } catch (error) {
+                        console.error("Error deleting project:", error);
+                        alert("Failed to delete project");
+                      }
                     }
                   }}
                   className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
