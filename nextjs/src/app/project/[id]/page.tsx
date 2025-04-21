@@ -10,8 +10,18 @@ import Header from "@/components/ui/edit/Header";
 import formatDateTime from "@/components/utils/formatTime";
 import { Project, CustomField } from "@/types/data/project";
 import { v4 as uuidv4 } from "uuid";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { useThemeStore } from "@/stores/theme/useThemeStore";
+import {
+  getPanelClasses,
+  getHeaderDividerClasses,
+  getHeadingClasses,
+  getTextClasses,
+  getSecondaryBgClasses,
+} from "@/utils/darkModeClasses";
 
 const ProjectPage = () => {
+  const { isDarkMode } = useThemeStore();
   const { id } = useParams();
   const router = useRouter();
   const projectId = String(id);
@@ -31,87 +41,126 @@ const ProjectPage = () => {
   const [project, setProject] = useState<Project>();
   const [projectExists, setProjectExists] = useState<boolean>(false);
   const [fields, setFields] = useState<CustomField[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
+  const [discardFeedback, setDiscardFeedback] = useState<string | null>(null);
+  const [hasChanges, setHasChanges] = useState<boolean>(false);
+
+  // Helper function to compare projects
+  const areProjectsDifferent = (project1: Project, project2: Project) => {
+    const keys = new Set([...Object.keys(project1), ...Object.keys(project2)]);
+    for (const key of keys) {
+      if (key === "lastEdited") continue; // Skip lastEdited as it's always different
+      if (JSON.stringify(project1[key]) !== JSON.stringify(project2[key])) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  // Update hasChanges when inputProject changes
+  useEffect(() => {
+    if (project && inputProject) {
+      setHasChanges(areProjectsDifferent(project, inputProject));
+    } else if (!project && inputProject) {
+      // For new projects, check if any fields have values
+      const hasValues = Object.entries(inputProject).some(([key, value]) => {
+        if (key === "id" || key === "lastEdited") return false;
+        return value !== undefined && value !== null && value !== "";
+      });
+      setHasChanges(hasValues);
+    }
+  }, [inputProject, project]);
 
   useEffect(() => {
-    if (!isHydrated) return;
-
-    // Handle "new" project case
-    if (projectId === "new") {
-      const newId = uuidv4();
-      router.replace(`/project/${newId}`);
-      return;
-    }
-
+    // Check if the project exists in the store
     const foundProject = projects.find((p) => p.id === projectId);
-    const exists = !!foundProject;
-    setProjectExists(exists);
-    setProject(foundProject);
 
-    // Initialize new project (either truly new or not found)
-    if (!foundProject || projectId === "new") {
-      // Initialize with just name and description for new projects
-      const initialFields = [
-        {
-          id: "field-name",
-          name: "Name",
-          type: "input" as const,
-          value: "",
-        },
-        {
-          id: "field-description",
-          name: "Description",
-          type: "input" as const,
-          value: "",
-        },
-      ];
+    // If we found the project or have any projects (meaning localStorage was loaded),
+    // we can exit the loading state
+    if (foundProject || projects.length > 0 || isHydrated) {
+      setIsPageLoading(false);
 
-      setFields(initialFields);
-      setInputProject({
-        id: projectId as string,
-        lastEdited: new Date().toISOString(),
-        name: "",
-        description: "",
-      });
-    } else {
-      // Convert existing project to fields
-      const projectFields: CustomField[] = [
-        {
-          id: "field-name",
-          name: "Name",
-          type: "input" as const,
-          value: foundProject.name || "",
-        },
-        {
-          id: "field-description",
-          name: "Description",
-          type: "input" as const,
-          value: foundProject.description || "",
-        },
-      ];
+      // Handle "new" project case
+      if (projectId === "new") {
+        const newId = uuidv4();
+        router.replace(`/project/${newId}`);
+        return;
+      }
 
-      // Add any other fields that exist in the project
-      Object.entries(foundProject).forEach(([key, value]) => {
-        if (
-          key !== "id" &&
-          key !== "name" &&
-          key !== "description" &&
-          key !== "lastEdited" &&
-          !key.endsWith("_type") &&
-          value !== undefined &&
-          value !== null
-        ) {
-          const fieldType = determineFieldType(value);
-          projectFields.push({
-            id: `field-${key}`,
-            name: key.charAt(0).toUpperCase() + key.slice(1),
-            type: fieldType,
-            value: value,
-          });
-        }
-      });
+      // Update project existence state
+      const exists = !!foundProject;
+      setProjectExists(exists);
+      setProject(foundProject);
 
-      setFields(projectFields);
-      setInputProject(foundProject);
+      // Initialize new project (either truly new or not found)
+      if (!foundProject || projectId === "new") {
+        // Initialize with just name and description for new projects
+        const initialFields = [
+          {
+            id: "field-name",
+            name: "Name",
+            type: "input" as const,
+            value: "",
+          },
+          {
+            id: "field-description",
+            name: "Description",
+            type: "input" as const,
+            value: "",
+          },
+        ];
+
+        setFields(initialFields);
+        setInputProject({
+          id: projectId as string,
+          lastEdited: new Date().toISOString(),
+          name: "",
+          description: "",
+        });
+      } else {
+        // Convert existing project to fields
+        const projectFields: CustomField[] = [
+          {
+            id: "field-name",
+            name: "Name",
+            type: "input" as const,
+            value: foundProject.name || "",
+          },
+          {
+            id: "field-description",
+            name: "Description",
+            type: "input" as const,
+            value: foundProject.description || "",
+          },
+        ];
+
+        // Add any other fields that exist in the project
+        Object.entries(foundProject).forEach(([key, value]) => {
+          if (
+            key !== "id" &&
+            key !== "name" &&
+            key !== "description" &&
+            key !== "lastEdited" &&
+            !key.endsWith("_type") &&
+            value !== undefined &&
+            value !== null
+          ) {
+            const fieldType = determineFieldType(value);
+            projectFields.push({
+              id: `field-${key}`,
+              name: key.charAt(0).toUpperCase() + key.slice(1),
+              type: fieldType,
+              value: value,
+            });
+          }
+        });
+
+        setFields(projectFields);
+        setInputProject(foundProject);
+      }
     }
   }, [id, isHydrated, projects, projectId, setInputProject, router]);
 
@@ -189,6 +238,7 @@ const ProjectPage = () => {
   // Save changes
   const handleSave = async () => {
     try {
+      setIsSaving(true);
       if (inputProject) {
         await createProject(access_token as string, inputProject);
         setSuccessMsg("Project saved...");
@@ -206,6 +256,10 @@ const ProjectPage = () => {
       }
     } catch (error) {
       console.error("Error saving project:", error);
+      setSuccessMsg("Failed to save project");
+      setSuccess(false);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -250,6 +304,8 @@ const ProjectPage = () => {
       });
 
       setFields(projectFields);
+      setDiscardFeedback("Changes discarded");
+      setTimeout(() => setDiscardFeedback(null), 2000);
     } else {
       // Reset to empty state for new projects
       const emptyProject = {
@@ -273,195 +329,141 @@ const ProjectPage = () => {
           value: "",
         },
       ]);
+      setDiscardFeedback("Project reset to initial state");
+      setTimeout(() => setDiscardFeedback(null), 2000);
     }
   };
 
   return (
-    <div className="flex flex-col justify-between flex-1 p-4 max-w-5xl mx-auto">
-      <div className="flex flex-col">
+    <div className="flex flex-col justify-between flex-1 p-4 w-full">
+      <div className="flex flex-col w-full">
         <div className="relative z-[100]">
-          <Header projectExist={projectExists} />
+          <Header projectExist={projectExists} isLoading={isPageLoading} />
         </div>
 
-        {/* Project Info Section */}
-        <div className="bg-white rounded-lg shadow-sm mb-8 relative z-[1]">
-          <div className="p-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Project Information
-            </h3>
-          </div>
-          <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100">
-                  <svg
-                    className="w-6 h-6 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Project ID</p>
-                <p className="text-sm font-mono text-gray-900">{projectId}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100">
-                  <svg
-                    className="w-6 h-6 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">Last Edited</p>
-                <p className="text-sm text-gray-900">
-                  {project?.lastEdited
-                    ? formatDateTime(project.lastEdited)
-                    : "Never"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Fields Section */}
-        <div className="bg-blue-50 rounded-lg border-2 border-blue-200 mb-8 relative z-[1]">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold mb-6 text-blue-800 flex items-center gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-              Project Fields
-            </h2>
-            <p className="text-blue-700 mb-6">
-              {projectExists
-                ? "Edit your project fields. You can modify existing fields or add new ones."
-                : "Add fields to your project. You can choose from templates or create your own fields."}
-            </p>
-            <EditFields fields={fields} onUpdate={handleFieldsUpdate} />
-          </div>
-        </div>
-
-        {success ? (
-          <div className="flex items-center justify-center p-4 mb-8 bg-green-50 border border-green-200 rounded-lg relative z-[1]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-green-500 mr-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            <span className="text-green-700 text-lg font-medium">
-              {successMsg}
-            </span>
-          </div>
+        {isPageLoading ? (
+          <LoadingSpinner size="lg" />
         ) : (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-[90]">
-            <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-end items-center gap-3">
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button
-                  onClick={handleDiscard}
-                  className="flex-1 sm:flex-initial inline-flex items-center justify-center px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+          <>
+            {/* Project Info Section */}
+            <div
+              className={`rounded-lg shadow-sm mb-8 relative z-[1] w-full border ${getPanelClasses(
+                isDarkMode
+              )}`}
+            >
+              <div
+                className={`p-4 border-b ${getHeaderDividerClasses(
+                  isDarkMode
+                )}`}
+              >
+                <h3
+                  className={`text-lg font-semibold ${getHeadingClasses(
+                    isDarkMode
+                  )}`}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                  Discard Changes
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="flex-1 sm:flex-initial inline-flex items-center justify-center px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
-                    />
-                  </svg>
-                  Save Changes
-                </button>
+                  Project Information
+                </h3>
               </div>
-              {projectExists && (
-                <button
-                  onClick={async () => {
-                    if (
-                      window.confirm(
-                        "Are you sure you want to delete this project? This action cannot be undone."
-                      )
-                    ) {
-                      try {
-                        await deleteProject(access_token as string, projectId);
-                        removeProject(projectId);
-                        router.push("/dashboard");
-                      } catch (error) {
-                        console.error("Error deleting project:", error);
-                        alert("Failed to delete project");
-                      }
-                    }
-                  }}
-                  className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div
+                  className={`flex items-center space-x-3 p-3 rounded-lg ${getSecondaryBgClasses(
+                    isDarkMode
+                  )}`}
+                >
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100">
+                      <svg
+                        className="w-6 h-6 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <p
+                      className={`text-sm font-medium ${getTextClasses(
+                        isDarkMode
+                      )}`}
+                    >
+                      Project ID
+                    </p>
+                    <p
+                      className={`text-sm font-mono truncate ${getTextClasses(
+                        isDarkMode
+                      )}`}
+                    >
+                      {projectId}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className={`flex items-center space-x-3 p-3 rounded-lg ${getSecondaryBgClasses(
+                    isDarkMode
+                  )}`}
+                >
+                  <div className="flex-shrink-0">
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-100">
+                      <svg
+                        className="w-6 h-6 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div>
+                    <p
+                      className={`text-sm font-medium ${getTextClasses(
+                        isDarkMode
+                      )}`}
+                    >
+                      Last Edited
+                    </p>
+                    <p className={`text-sm ${getTextClasses(isDarkMode)}`}>
+                      {project?.lastEdited
+                        ? formatDateTime(project.lastEdited)
+                        : "Never"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Fields Section */}
+            <div
+              className={`${
+                isDarkMode
+                  ? "bg-gray-900 border-gray-800"
+                  : "bg-gray-50 border-gray-200"
+              } rounded-lg border-2 mb-8 relative z-[1] w-full`}
+            >
+              <div className="p-6">
+                <h2
+                  className={`text-2xl font-bold mb-6 ${
+                    isDarkMode ? "text-gray-200" : "text-gray-900"
+                  } flex items-center gap-2`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
+                    className={`h-6 w-6 ${
+                      isDarkMode ? "text-gray-200" : "text-gray-900"
+                    }`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -470,14 +472,224 @@ const ProjectPage = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     />
                   </svg>
-                  Delete Project
-                </button>
-              )}
+                  Project Fields
+                </h2>
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  } mb-6`}
+                >
+                  {projectExists
+                    ? "Edit your project fields. You can modify existing fields or add new ones."
+                    : "Add fields to your project. You can choose from templates or create your own fields."}
+                </p>
+                <EditFields fields={fields} onUpdate={handleFieldsUpdate} />
+              </div>
             </div>
-          </div>
+
+            {success ? (
+              <div className="flex items-center justify-center p-4 mb-8 bg-green-50 border border-green-200 rounded-lg relative z-[1]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-green-500 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span className="text-green-700 text-lg font-medium">
+                  {successMsg}
+                </span>
+              </div>
+            ) : (
+              <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-200 p-4 z-[90]">
+                <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-end items-center gap-3">
+                  {discardFeedback && (
+                    <div className="flex items-center justify-center p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-blue-500 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span className="text-blue-700 text-sm">
+                        {discardFeedback}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <button
+                      onClick={handleDiscard}
+                      disabled={isSaving || isDeleting || !hasChanges}
+                      className={`flex-1 sm:flex-initial inline-flex items-center justify-center px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200 ${
+                        hasChanges
+                          ? "bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500 border border-gray-300"
+                          : "bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed"
+                      }`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      Discard Changes
+                    </button>
+                    <button
+                      onClick={handleSave}
+                      disabled={isSaving || isDeleting || !hasChanges}
+                      className={`flex-1 sm:flex-initial inline-flex items-center justify-center px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200 ${
+                        hasChanges
+                          ? "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 border border-green-600"
+                          : "bg-green-400 text-white border border-green-400 cursor-not-allowed"
+                      }`}
+                    >
+                      {isSaving ? (
+                        <>
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                            />
+                          </svg>
+                          Save Changes
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {projectExists && (
+                    <button
+                      onClick={async () => {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to delete this project? This action cannot be undone."
+                          )
+                        ) {
+                          try {
+                            setIsDeleting(true);
+                            await deleteProject(
+                              access_token as string,
+                              projectId
+                            );
+                            removeProject(projectId);
+                            router.push("/dashboard");
+                          } catch (error) {
+                            console.error("Error deleting project:", error);
+                            alert("Failed to delete project");
+                          } finally {
+                            setIsDeleting(false);
+                          }
+                        }
+                      }}
+                      disabled={isSaving || isDeleting}
+                      className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-red-600 text-white hover:bg-red-700 border border-red-600"
+                    >
+                      {isDeleting ? (
+                        <>
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Deleting...
+                        </>
+                      ) : (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                          Delete Project
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
       <div className="h-32" />

@@ -27,11 +27,13 @@ const Sidebar: React.FC<Props> = () => {
         </div>
 
         <div className="flex flex-col items-center space-y-8">
-          <h2 className="text-4xl font-bold text-white mb-12">Menu</h2>
+          <h2 className="text-4xl font-bold text-white mb-12 bg-gradient-to-r from-gray-900/95 to-gray-800/95 backdrop-blur-sm px-8 py-4 rounded-lg shadow-lg">
+            Menu
+          </h2>
 
           {/* Menu container with background */}
-          <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-800/50 shadow-2xl">
-            <nav className="flex flex-col items-center space-y-6">
+          <div className="bg-gray-900/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-800/50 shadow-2xl w-[300px]">
+            <nav className="flex flex-col items-center space-y-6 w-full">
               {options.map((option, index) => {
                 const route = `/${option.toLowerCase()}`;
                 return (
@@ -39,7 +41,7 @@ const Sidebar: React.FC<Props> = () => {
                     key={index}
                     label={option}
                     link={route}
-                    className="text-2xl font-medium"
+                    className="text-2xl font-medium w-full"
                   />
                 );
               })}

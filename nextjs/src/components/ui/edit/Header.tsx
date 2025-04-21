@@ -1,11 +1,14 @@
 interface Props {
   projectExist: boolean;
+  isLoading?: boolean;
 }
 
-const Header: React.FC<Props> = ({ projectExist }) => {
+const Header: React.FC<Props> = ({ projectExist, isLoading = false }) => {
   let headerText: string;
 
-  if (projectExist) {
+  if (isLoading) {
+    headerText = "Loading project...";
+  } else if (projectExist) {
     headerText = "Edit your project";
   } else {
     headerText = "Create a new project";

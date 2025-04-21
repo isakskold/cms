@@ -4,20 +4,42 @@ import useProjectStore from "@/stores/project/useProjectStore";
 import formatDateTime from "@/components/utils/formatTime";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
+import { useEffect } from "react";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { useThemeStore } from "@/stores/theme/useThemeStore";
+import {
+  getPanelClasses,
+  getHeadingClasses,
+  getTextClasses,
+  getPrimaryButtonClasses,
+  getSecondaryBgClasses,
+  getSubtextClasses,
+} from "@/utils/darkModeClasses";
 
 export default function Dashboard() {
-  const { projects, isHydrated } = useProjectStore();
+  const { projects, isHydrated, isLoading, finishInitialLoad } =
+    useProjectStore();
+  const { isDarkMode } = useThemeStore();
   const router = useRouter();
+
+  useEffect(() => {
+    // Small delay to ensure store is properly initialized
+    const timer = setTimeout(() => {
+      finishInitialLoad();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [finishInitialLoad]);
 
   const handleNewProject = () => {
     const newId = uuidv4();
     router.push(`/project/${newId}`);
   };
 
-  if (!isHydrated) {
+  // Show loading spinner if not hydrated or still loading
+  if (!isHydrated || isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
       </div>
     );
   }
@@ -26,13 +48,21 @@ export default function Dashboard() {
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
       {projects.length > 0 ? (
         <>
-          <div className="bg-gray-50 rounded-lg shadow-sm p-5 mb-10">
+          <div
+            className={`rounded-lg shadow-sm p-5 mb-10 ${getSecondaryBgClasses(
+              isDarkMode
+            )}`}
+          >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-800 tracking-tight mb-1">
+                <h1
+                  className={`text-3xl font-bold tracking-tight mb-1 ${getHeadingClasses(
+                    isDarkMode
+                  )}`}
+                >
                   My Projects
                 </h1>
-                <p className="text-base text-gray-600">
+                <p className={`text-base ${getTextClasses(isDarkMode)}`}>
                   {projects.length} project{projects.length !== 1 ? "s" : ""} in
                   total
                 </p>
@@ -71,19 +101,35 @@ export default function Dashboard() {
                 href={`/project/${project.id}`}
                 className="group block"
               >
-                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden transition-shadow duration-200 hover:shadow-lg">
+                <div
+                  className={`rounded-lg border overflow-hidden transition-shadow duration-200 hover:shadow-lg ${getPanelClasses(
+                    isDarkMode
+                  )}`}
+                >
                   <div className="p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <h2 className="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors duration-200">
+                        <h2
+                          className={`text-lg font-semibold truncate group-hover:text-blue-600 transition-colors duration-200 ${getHeadingClasses(
+                            isDarkMode
+                          )}`}
+                        >
                           {project.name || "Untitled Project"}
                         </h2>
-                        <p className="mt-1 text-sm text-gray-500">
+                        <p
+                          className={`mt-1 text-sm ${getSubtextClasses(
+                            isDarkMode
+                          )}`}
+                        >
                           Last edited {formatDateTime(project.lastEdited)}
                         </p>
                       </div>
                       <div className="ml-4">
-                        <div className="rounded-full p-2 bg-gray-50 group-hover:bg-blue-50 transition-colors duration-200">
+                        <div
+                          className={`rounded-full p-2 ${getSecondaryBgClasses(
+                            isDarkMode
+                          )} group-hover:bg-blue-50 transition-colors duration-200`}
+                        >
                           <svg
                             className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors duration-200"
                             fill="none"
@@ -100,14 +146,28 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
-                    <p className="mt-3 text-sm text-gray-600 line-clamp-2">
+                    <p
+                      className={`mt-3 text-sm line-clamp-2 ${getTextClasses(
+                        isDarkMode
+                      )}`}
+                    >
                       {project.description || "No description provided"}
                     </p>
                   </div>
-                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                    <div className="flex items-center text-sm text-gray-500">
+                  <div
+                    className={`px-6 py-4 border-t ${getSecondaryBgClasses(
+                      isDarkMode
+                    )} ${isDarkMode ? "border-gray-700" : "border-gray-100"}`}
+                  >
+                    <div
+                      className={`flex items-center text-sm ${getSubtextClasses(
+                        isDarkMode
+                      )}`}
+                    >
                       <svg
-                        className="h-5 w-5 mr-2 text-gray-400"
+                        className={`h-5 w-5 mr-2 ${
+                          isDarkMode ? "text-gray-500" : "text-gray-400"
+                        }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -129,10 +189,16 @@ export default function Dashboard() {
         </>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-          <div className="max-w-md mx-auto bg-white rounded-lg shadow-sm p-8 border border-gray-100">
+          <div
+            className={`max-w-md mx-auto rounded-lg shadow-sm p-8 border ${getPanelClasses(
+              isDarkMode
+            )}`}
+          >
             <div className="mb-8">
               <svg
-                className="w-24 h-24 mx-auto text-gray-400"
+                className={`w-24 h-24 mx-auto ${
+                  isDarkMode ? "text-gray-500" : "text-gray-400"
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -145,10 +211,18 @@ export default function Dashboard() {
                 />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2
+              className={`text-3xl font-bold mb-4 ${getHeadingClasses(
+                isDarkMode
+              )}`}
+            >
               No Projects Yet
             </h2>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+            <p
+              className={`text-lg mb-8 leading-relaxed ${getTextClasses(
+                isDarkMode
+              )}`}
+            >
               Start by creating your first project. You can add custom fields,
               images, and more to showcase your work.
             </p>

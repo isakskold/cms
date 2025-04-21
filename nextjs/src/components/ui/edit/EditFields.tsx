@@ -2,6 +2,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { CustomField } from "@/types/data/project";
 import Image from "next/image";
+import { useThemeStore } from "@/stores/theme/useThemeStore";
+import {
+  getPanelClasses,
+  getHeaderDividerClasses,
+  getHeadingClasses,
+  getTextClasses,
+  getSecondaryBgClasses,
+} from "@/utils/darkModeClasses";
 
 interface Props {
   fields: CustomField[];
@@ -88,6 +96,7 @@ const templates = [
 ];
 
 const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
+  const { isDarkMode } = useThemeStore();
   const [newField, setNewField] = useState<Partial<CustomField>>({});
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const [selectedTemplate, setSelectedTemplate] = useState("");
@@ -283,21 +292,35 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
   return (
     <div className="space-y-8">
       {/* Template and New Field sections */}
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Apply Template section */}
-        <div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">
+        <div
+          className={`${getPanelClasses(isDarkMode)} p-6 rounded-lg shadow-sm`}
+        >
+          <h3
+            className={`${getHeadingClasses(
+              isDarkMode
+            )} text-lg font-semibold mb-4`}
+          >
             Apply a Template
           </h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                className={`${getTextClasses(
+                  isDarkMode
+                )} block text-sm font-medium`}
+              >
                 Select Template
               </label>
               <select
                 value={selectedTemplate}
                 onChange={(e) => setSelectedTemplate(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`${getSecondaryBgClasses(
+                  isDarkMode
+                )} ${getTextClasses(
+                  isDarkMode
+                )} mt-1 block w-full rounded-md border border-gray-200 dark:border-gray-700 shadow-[0_2px_4px_rgba(0,0,0,0.02)] px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vw,0.75rem)] text-[clamp(0.875rem,1.25vw,1rem)] focus:outline-none hover:bg-gray-50 dark:hover:bg-gray-800 focus:bg-gray-50 dark:focus:bg-gray-800 focus:shadow-[0_4px_8px_rgba(0,0,0,0.04)] dark:focus:shadow-[0_4px_8px_rgba(0,0,0,0.25)] transition-all duration-200 ease-in-out appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_1rem_center] bg-no-repeat pr-10`}
               >
                 <option value="">Choose a template...</option>
                 {templates.map((template) => (
@@ -317,13 +340,23 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
         </div>
 
         {/* Create New Field section */}
-        <div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">
+        <div
+          className={`${getPanelClasses(isDarkMode)} p-6 rounded-lg shadow-sm`}
+        >
+          <h3
+            className={`${getHeadingClasses(
+              isDarkMode
+            )} text-lg font-semibold mb-4`}
+          >
             Create New Field
           </h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                className={`${getTextClasses(
+                  isDarkMode
+                )} block text-sm font-medium`}
+              >
                 Field Name
               </label>
               <input
@@ -333,11 +366,19 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                   setNewField({ ...newField, name: e.target.value })
                 }
                 placeholder="Enter field name"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`${getSecondaryBgClasses(
+                  isDarkMode
+                )} ${getTextClasses(
+                  isDarkMode
+                )} mt-1 block w-full rounded-md border border-gray-200 dark:border-gray-700 shadow-[0_2px_4px_rgba(0,0,0,0.02)] px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vw,0.75rem)] text-[clamp(0.875rem,1.25vw,1rem)] focus:outline-none hover:bg-gray-50 dark:hover:bg-gray-800 focus:bg-gray-50 dark:focus:bg-gray-800 focus:shadow-[0_4px_8px_rgba(0,0,0,0.04)] dark:focus:shadow-[0_4px_8px_rgba(0,0,0,0.25)] transition-all duration-200 ease-in-out`}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                className={`${getTextClasses(
+                  isDarkMode
+                )} block text-sm font-medium`}
+              >
                 Field Type
               </label>
               <select
@@ -348,7 +389,11 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                     type: e.target.value as CustomField["type"],
                   })
                 }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`${getSecondaryBgClasses(
+                  isDarkMode
+                )} ${getTextClasses(
+                  isDarkMode
+                )} mt-1 block w-full rounded-md border border-gray-200 dark:border-gray-700 shadow-[0_2px_4px_rgba(0,0,0,0.02)] px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vw,0.75rem)] text-[clamp(0.875rem,1.25vw,1rem)] focus:outline-none hover:bg-gray-50 dark:hover:bg-gray-800 focus:bg-gray-50 dark:focus:bg-gray-800 focus:shadow-[0_4px_8px_rgba(0,0,0,0.04)] dark:focus:shadow-[0_4px_8px_rgba(0,0,0,0.25)] transition-all duration-200 ease-in-out appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M6%208L1%203h10z%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_1rem_center] bg-no-repeat pr-10`}
               >
                 <option value="">Select type...</option>
                 {fieldTypes.map((type) => (
@@ -369,9 +414,13 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
       </div>
 
       {/* Fields Display section */}
-      <div className="bg-white p-6 rounded-lg shadow-sm">
+      <div
+        className={`${getPanelClasses(isDarkMode)} p-6 rounded-lg shadow-sm`}
+      >
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3
+            className={`${getHeadingClasses(isDarkMode)} text-lg font-semibold`}
+          >
             Project Fields ({fields.length})
           </h3>
           <button
@@ -383,7 +432,7 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
         </div>
 
         {fields.length === 0 ? (
-          <p className="text-gray-500 italic">
+          <p className={`${getTextClasses(isDarkMode)} italic`}>
             No fields added yet. Add fields by applying a template or creating
             fields manually.
           </p>
@@ -392,10 +441,16 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
             {fields.map((field) => (
               <div
                 key={field.id}
-                className="bg-gray-50 p-4 rounded-lg space-y-2 relative z-0"
+                className={`${getSecondaryBgClasses(
+                  isDarkMode
+                )} p-4 rounded-lg space-y-2 relative z-0`}
               >
                 <div className="flex justify-between items-start">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label
+                    className={`${getTextClasses(
+                      isDarkMode
+                    )} block text-sm font-medium`}
+                  >
                     {field.name}
                     {(field.id === "field-name" ||
                       field.id === "field-description") && (
@@ -425,7 +480,11 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                     onChange={(e) =>
                       handleUpdateField(field.id, e.target.value)
                     }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className={`${getSecondaryBgClasses(
+                      isDarkMode
+                    )} ${getTextClasses(
+                      isDarkMode
+                    )} mt-1 block w-full max-w-full rounded-md border border-gray-200 dark:border-gray-700 shadow-[0_2px_4px_rgba(0,0,0,0.02)] px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vw,0.75rem)] text-[clamp(0.875rem,1.25vw,1rem)] focus:outline-none hover:bg-gray-50 dark:hover:bg-gray-800 focus:bg-gray-50 dark:focus:bg-gray-800 focus:shadow-[0_4px_8px_rgba(0,0,0,0.04)] dark:focus:shadow-[0_4px_8px_rgba(0,0,0,0.25)] transition-all duration-200 ease-in-out`}
                   />
                 )}
 
@@ -436,7 +495,11 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                       handleUpdateField(field.id, e.target.value)
                     }
                     rows={3}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className={`${getSecondaryBgClasses(
+                      isDarkMode
+                    )} ${getTextClasses(
+                      isDarkMode
+                    )} mt-1 block w-full max-w-full rounded-md border border-gray-200 dark:border-gray-700 shadow-[0_2px_4px_rgba(0,0,0,0.02)] px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vw,0.75rem)] text-[clamp(0.875rem,1.25vw,1rem)] focus:outline-none hover:bg-gray-50 dark:hover:bg-gray-800 focus:bg-gray-50 dark:focus:bg-gray-800 focus:shadow-[0_4px_8px_rgba(0,0,0,0.04)] dark:focus:shadow-[0_4px_8px_rgba(0,0,0,0.25)] transition-all duration-200 ease-in-out`}
                   />
                 )}
 
@@ -455,7 +518,11 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                               ? "Enter image URL (http:// or https://)"
                               : "Enter value"
                           }
-                          className="w-full pr-24 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                          className={`${getSecondaryBgClasses(
+                            isDarkMode
+                          )} ${getTextClasses(
+                            isDarkMode
+                          )} w-full max-w-full pr-24 rounded-md border border-gray-200 dark:border-gray-700 shadow-[0_2px_4px_rgba(0,0,0,0.02)] px-[clamp(0.75rem,1.5vw,1rem)] py-[clamp(0.5rem,1vw,0.75rem)] text-[clamp(0.875rem,1.25vw,1rem)] focus:outline-none hover:bg-gray-50 dark:hover:bg-gray-800 focus:bg-gray-50 dark:focus:bg-gray-800 focus:shadow-[0_4px_8px_rgba(0,0,0,0.04)] dark:focus:shadow-[0_4px_8px_rgba(0,0,0,0.25)] transition-all duration-200 ease-in-out`}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
@@ -465,7 +532,7 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                         />
                         <button
                           onClick={() => handleAddMultiselectValue(field.id)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 text-sm font-medium rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-500 transition-colors duration-200"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

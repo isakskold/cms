@@ -6,11 +6,14 @@ interface ProjectStore {
   projects: Project[];
   inputProject: Project | null; // Not persisted
   isHydrated: boolean;
+  isLoading: boolean;
   setProjects: (projects: Project[]) => void;
   addProject: (project: Project) => void;
   updateProject: (updatedProject: Project) => void;
   removeProject: (id: string) => void;
   setInputProject: (project: Project | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  finishInitialLoad: () => void;
 }
 
 const useProjectStore = create<ProjectStore>()(
@@ -19,6 +22,7 @@ const useProjectStore = create<ProjectStore>()(
       projects: [],
       inputProject: null,
       isHydrated: false,
+      isLoading: true,
       setProjects: (projects) => set({ projects }),
       addProject: (project) =>
         set((state) => ({ projects: [...state.projects, project] })),
@@ -33,13 +37,17 @@ const useProjectStore = create<ProjectStore>()(
           projects: state.projects.filter((p) => p.id !== id),
         })),
       setInputProject: (project) => set({ inputProject: project }),
+      setIsLoading: (isLoading) => set({ isLoading }),
+      finishInitialLoad: () => set({ isHydrated: true, isLoading: false }),
     }),
     {
-      name: "projects-store", // Key used in localStorage
-      partialize: (state) => ({ projects: state.projects }), // Only persist projects
+      name: "projects-store",
+      partialize: (state) => ({ projects: state.projects }),
       onRehydrateStorage: () => (state) => {
+        // Keep loading true during hydration
         if (state) {
-          state.isHydrated = true; // Set isHydrated to true after rehydration
+          state.isLoading = true;
+          state.isHydrated = false;
         }
       },
     }
