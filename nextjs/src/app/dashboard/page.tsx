@@ -11,7 +11,6 @@ import {
   getPanelClasses,
   getHeadingClasses,
   getTextClasses,
-  getPrimaryButtonClasses,
   getSecondaryBgClasses,
   getSubtextClasses,
 } from "@/utils/darkModeClasses";

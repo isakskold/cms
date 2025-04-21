@@ -41,7 +41,6 @@ const ProjectPage = () => {
   const [project, setProject] = useState<Project>();
   const [projectExists, setProjectExists] = useState<boolean>(false);
   const [fields, setFields] = useState<CustomField[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(true);

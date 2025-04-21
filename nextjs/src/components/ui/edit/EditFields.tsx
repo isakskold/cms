@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useThemeStore } from "@/stores/theme/useThemeStore";
 import {
   getPanelClasses,
-  getHeaderDividerClasses,
   getHeadingClasses,
   getTextClasses,
   getSecondaryBgClasses,
