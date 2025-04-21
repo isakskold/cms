@@ -14,7 +14,12 @@ const generateApiKey = async (token: string) => {
 
     return response.data.message.apiKey;
   } catch (error) {
-    throw new Error("Failed to generate API key");
+    console.error("API Key generation error:", error);
+    throw new Error(
+      error instanceof Error
+        ? `Failed to generate API key: ${error.message}`
+        : "Failed to generate API key"
+    );
   }
 };
 
