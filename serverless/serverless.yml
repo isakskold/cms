@@ -102,6 +102,17 @@ functions:
           path: /user/refreshToken
           method: post
 
+  generateApiKey:
+    handler: handlers/user/generateApiKey.handler
+    role:
+      Fn::GetAtt:
+        - DynamoDbAccessRole
+        - Arn
+    events:
+      - httpApi:
+          path: /user/generateApiKey
+          method: post
+
 resources:
   Resources:
     # DynamoDB Table

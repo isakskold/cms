@@ -10,11 +10,17 @@ import {
   getTextClasses,
 } from "@/utils/darkModeClasses";
 import { Copy, Check } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/InfoTooltip";
+import generateApiKey from "@/requests/user/generateApiKey";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 
 export default function Settings() {
   const { isDarkMode, toggleDarkMode } = useThemeStore();
+  const { tokenData } = useAuthStore();
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -25,6 +31,27 @@ export default function Settings() {
       console.error("Failed to copy text: ", err);
     }
   };
+
+  const handleGenerateApiKey = async () => {
+    if (!tokenData?.access_token) return;
+
+    setIsLoading(true);
+    try {
+      console.log("Generating API key...");
+
+      const key = await generateApiKey(tokenData.access_token);
+      setApiKey(key);
+    } catch (error) {
+      console.error("Failed to generate API key:", error);
+      // TODO: Add error handling/notification
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -83,6 +110,7 @@ export default function Settings() {
                 )}`}
               >
                 API Access
+                <InfoTooltip content="Generating a new API key will immediately invalidate your previous key. Make sure to update any applications using the old key." />
               </h2>
               <div
                 className={`rounded-lg p-4 ${getSecondaryBgClasses(
@@ -98,11 +126,7 @@ export default function Settings() {
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={() => {
-                        // TODO: Implement actual API key generation
-                        const generatedKey = "generated_api_key";
-                        setApiKey(generatedKey);
-                      }}
+                      onClick={handleGenerateApiKey}
                       className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-md hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                     >
                       Generate New API Key
