@@ -24,9 +24,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-[clamp(400px,70vh,800px)] h-full w-full flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-xl">
+    <div className="min-h-[clamp(400px,70vh,800px)] h-full w-full flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-xl relative">
       {/* Left Panel - Feature List */}
-      <div className="w-full md:w-1/2 bg-gradient-to-br from-blue-600 to-purple-600 p-[clamp(16px,4vw,32px)] flex flex-col ">
+      <div className="w-full md:w-1/2 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-[clamp(16px,4vw,32px)] flex flex-col relative z-10 md:after:content-[''] md:after:absolute md:after:right-0 md:after:top-1/4 md:after:bottom-1/5 md:after:w-16 md:after:bg-gradient-to-l md:after:from-purple-500/90 md:after:to-transparent md:after:blur-2xl">
         <div>
           <h1 className="text-[clamp(20px,5vw,30px)] font-bold text-white mb-[clamp(12px,3vh,24px)]">
             Lightweight Headless CMS
@@ -35,7 +35,7 @@ export default function Home() {
           <ul className="space-y-[clamp(8px,2vh,16px)]">
             <li className="flex items-start text-white gap-2">
               <svg
-                className="w-[clamp(16px,1.2vw,20px)] h-[clamp(16px,1.2vw,20px)] mt-0.5 flex-shrink-0"
+                className="w-[clamp(16px,1.5vw,28px)] h-[clamp(16px,1.5vw,28px)] mt-0.5 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -47,13 +47,13 @@ export default function Home() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span className="text-[clamp(12px,1vw,16px)]">
+              <span className="text-[clamp(14px,1.4vw,22px)]">
                 Lightning-fast setup for portfolio websites
               </span>
             </li>
             <li className="flex items-start text-white gap-2">
               <svg
-                className="w-[clamp(16px,1.2vw,20px)] h-[clamp(16px,1.2vw,20px)] mt-0.5 flex-shrink-0"
+                className="w-[clamp(16px,1.5vw,28px)] h-[clamp(16px,1.5vw,28px)] mt-0.5 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -65,13 +65,13 @@ export default function Home() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span className="text-[clamp(12px,1vw,16px)]">
+              <span className="text-[clamp(14px,1.4vw,22px)]">
                 Smart components that adapt to your data
               </span>
             </li>
             <li className="flex items-start text-white gap-2">
               <svg
-                className="w-[clamp(16px,1.2vw,20px)] h-[clamp(16px,1.2vw,20px)] mt-0.5 flex-shrink-0"
+                className="w-[clamp(16px,1.5vw,28px)] h-[clamp(16px,1.5vw,28px)] mt-0.5 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -83,13 +83,13 @@ export default function Home() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span className="text-[clamp(12px,1vw,16px)]">
+              <span className="text-[clamp(14px,1.4vw,22px)]">
                 Zero-configuration Next.js integration
               </span>
             </li>
             <li className="flex items-start text-white gap-2">
               <svg
-                className="w-[clamp(16px,1.2vw,20px)] h-[clamp(16px,1.2vw,20px)] mt-0.5 flex-shrink-0"
+                className="w-[clamp(16px,1.5vw,28px)] h-[clamp(16px,1.5vw,28px)] mt-0.5 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -101,13 +101,13 @@ export default function Home() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span className="text-[clamp(12px,1vw,16px)]">
+              <span className="text-[clamp(14px,1.4vw,22px)]">
                 Enterprise-grade security with AWS Cognito
               </span>
             </li>
             <li className="flex items-start text-white gap-2">
               <svg
-                className="w-[clamp(16px,1.2vw,20px)] h-[clamp(16px,1.2vw,20px)] mt-0.5 flex-shrink-0"
+                className="w-[clamp(16px,1.5vw,28px)] h-[clamp(16px,1.5vw,28px)] mt-0.5 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -119,7 +119,7 @@ export default function Home() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span className="text-[clamp(12px,1vw,16px)]">
+              <span className="text-[clamp(14px,1.4vw,22px)]">
                 API-first architecture
               </span>
             </li>
@@ -230,7 +230,7 @@ export default function Home() {
       </div>
 
       {/* Right Panel - Detailed Info */}
-      <div className="w-full md:w-1/2 p-[clamp(16px,4vw,32px)] bg-white">
+      <div className="w-full md:w-1/2 p-[clamp(16px,4vw,32px)] bg-gradient-to-bl from-gray-100 via-gray-100 to-purple-600/80 relative z-0 md:before:content-[''] md:before:absolute md:before:left-0 md:before:top-2/3 md:before:bottom-0 md:before:w-8 md:before:bg-gradient-to-r md:before:from-purple-500/90 md:before:to-transparent md:before:blur-xl">
         <div className="h-full flex flex-col">
           <h2 className="text-[clamp(18px,4vw,28px)] font-bold text-gray-900 mb-[clamp(8px,2vh,16px)]">
             Your Data, Your Structure, Our Components
