@@ -4,7 +4,6 @@ import useProjectStore from "@/stores/project/useProjectStore";
 import formatDateTime from "@/components/utils/formatTime";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
-import { useEffect } from "react";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useThemeStore } from "@/stores/theme/useThemeStore";
 import {
