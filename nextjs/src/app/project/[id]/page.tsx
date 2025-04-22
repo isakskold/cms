@@ -510,7 +510,7 @@ const ProjectPage = () => {
                 </span>
               </div>
             ) : (
-              <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-200 p-4 z-[90]">
+              <div className="fixed bottom-0 left-0 right-0 bg-white/5 backdrop-blur-sm p-4 z-[90]">
                 <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-end items-center gap-3">
                   {discardFeedback && (
                     <div className="flex items-center justify-center p-2 bg-blue-50 border border-blue-200 rounded-lg">
