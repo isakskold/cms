@@ -126,12 +126,106 @@ export default function Home() {
           </ul>
         </div>
 
+        {/* Service Icons Section */}
+        <div className="mt-auto mb-6 md:text-left text-right">
+          <p className="text-white text-sm mb-3">Powered by:</p>
+          <div className="flex gap-4 items-center md:justify-start justify-end">
+            <div className="relative group">
+              <img
+                src="/svg/aws.svg"
+                alt="AWS"
+                className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
+              />
+              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                AWS
+              </span>
+            </div>
+            <div className="relative group">
+              <img
+                src="/svg/amazoncognito.svg"
+                alt="Cognito"
+                className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
+              />
+              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                Cognito
+              </span>
+            </div>
+            <div className="relative group">
+              <img
+                src="/svg/amazondynamodb.svg"
+                alt="DynamoDB"
+                className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
+              />
+              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                DynamoDB
+              </span>
+            </div>
+            <div className="relative group">
+              <img
+                src="/svg/nextjs.svg"
+                alt="Next.js"
+                className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
+              />
+              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                Next.js
+              </span>
+            </div>
+            <div className="relative group">
+              <img
+                src="/svg/vercel.svg"
+                alt="Vercel"
+                className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
+              />
+              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                Vercel
+              </span>
+            </div>
+          </div>
+        </div>
+
         <button
           onClick={redirectToCognito}
-          className="mt-[clamp(16px,4vh,32px)] w-full bg-white text-blue-600 hover:bg-blue-50 py-[clamp(8px,1.5vh,12px)] px-4 rounded-xl font-medium text-[clamp(12px,1vw,16px)] transition-colors duration-200"
+          className="w-full bg-white text-blue-600 hover:bg-blue-50 py-[clamp(12px,2vh,16px)] px-6 rounded-xl font-semibold text-[clamp(14px,1.2vw,18px)] transition-all duration-200 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2"
           disabled={loading}
         >
-          {loading ? "Redirecting..." : "Start Building Your Portfolio"}
+          {loading ? (
+            <>
+              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              Redirecting...
+            </>
+          ) : (
+            <>
+              Get Started
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
+              </svg>
+            </>
+          )}
         </button>
       </div>
 
