@@ -25,7 +25,7 @@ export default function CallbackPage() {
         try {
           const data = await exchangeCode(code);
           setTokenData({ access_token: data.access_token });
-          router.push("/dashboard");
+          router.replace("/dashboard");
         } catch (error: unknown) {
           setError(
             `Failed to retrieve tokens: ${
