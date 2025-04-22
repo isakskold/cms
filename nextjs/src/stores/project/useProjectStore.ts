@@ -46,8 +46,9 @@ const useProjectStore = create<ProjectStore>()(
       onRehydrateStorage: () => (state) => {
         // Keep loading true during hydration
         if (state) {
-          state.isLoading = true;
-          state.isHydrated = false;
+          // Mark as hydrated and stop loading once rehydration is complete
+          state.isHydrated = true;
+          state.isLoading = false;
         }
       },
     }

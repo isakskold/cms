@@ -49,10 +49,6 @@ export default function Settings() {
     }
   };
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
       <div
@@ -131,27 +127,33 @@ export default function Settings() {
                     >
                       Generate New API Key
                     </button>
-                    {apiKey && (
-                      <div className="flex items-center space-x-2">
-                        <span className="font-mono text-blue-600">
-                          ••••••••••••••••
-                        </span>
-                        <button
-                          onClick={() => copyToClipboard(apiKey)}
-                          className={`p-2 rounded-md transition-colors ${
-                            isDarkMode
-                              ? "hover:bg-gray-700"
-                              : "hover:bg-gray-200"
-                          }`}
-                          title="Copy to clipboard"
-                        >
-                          {copied ? (
-                            <Check className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <Copy className="w-4 h-4 text-blue-600" />
-                          )}
-                        </button>
+                    {isLoading ? (
+                      <div className="flex items-center ml-4">
+                        <LoadingSpinner size="sm" inline />
                       </div>
+                    ) : (
+                      apiKey && (
+                        <div className="flex items-center space-x-2">
+                          <span className="font-mono text-blue-600">
+                            ••••••••••••••••
+                          </span>
+                          <button
+                            onClick={() => copyToClipboard(apiKey)}
+                            className={`p-2 rounded-md transition-colors ${
+                              isDarkMode
+                                ? "hover:bg-gray-700"
+                                : "hover:bg-gray-200"
+                            }`}
+                            title="Copy to clipboard"
+                          >
+                            {copied ? (
+                              <Check className="w-4 h-4 text-green-500" />
+                            ) : (
+                              <Copy className="w-4 h-4 text-blue-600" />
+                            )}
+                          </button>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>

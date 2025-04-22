@@ -43,8 +43,12 @@ export const useAuthStore = create<AuthStore>()(
             } else {
               useProjectStore.getState().setProjects([]);
             }
+            // Set loading to false after projects are loaded
+            useProjectStore.getState().finishInitialLoad();
           } catch {
             useProjectStore.getState().setProjects([]);
+            // Also set loading to false if there was an error
+            useProjectStore.getState().finishInitialLoad();
           }
         } else {
           // If no token, clear projects

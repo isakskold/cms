@@ -16,18 +16,9 @@ import {
 } from "@/utils/darkModeClasses";
 
 export default function Dashboard() {
-  const { projects, isHydrated, isLoading, finishInitialLoad } =
-    useProjectStore();
+  const { projects, isHydrated, isLoading } = useProjectStore();
   const { isDarkMode } = useThemeStore();
   const router = useRouter();
-
-  useEffect(() => {
-    // Small delay to ensure store is properly initialized
-    const timer = setTimeout(() => {
-      finishInitialLoad();
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [finishInitialLoad]);
 
   const handleNewProject = () => {
     const newId = uuidv4();
