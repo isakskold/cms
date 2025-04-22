@@ -13,10 +13,12 @@ import {
   getSecondaryBgClasses,
   getSubtextClasses,
 } from "@/utils/darkModeClasses";
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 
 export default function Dashboard() {
   const { projects, isHydrated, isLoading } = useProjectStore();
   const { isDarkMode } = useThemeStore();
+  const { isLoggedIn } = useAuthStore();
   const router = useRouter();
 
   const handleNewProject = () => {
@@ -24,8 +26,10 @@ export default function Dashboard() {
     router.push(`/project/${newId}`);
   };
 
-  // Show loading spinner if not hydrated or still loading
-  if (!isHydrated || isLoading) {
+  // Show loading spinner if:
+  // 1. Not hydrated or still loading
+  // 2. User is logged in but projects haven't been fetched yet (length is 0)
+  if (!isHydrated || isLoading || (isLoggedIn && projects.length === 0)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
