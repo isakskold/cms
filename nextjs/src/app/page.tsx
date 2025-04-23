@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -149,9 +150,11 @@ export default function Home() {
           <p className="text-white text-sm mb-3">Powered by:</p>
           <div className="flex gap-4 items-center md:justify-start justify-end">
             <div className="relative group">
-              <img
+              <Image
                 src="/svg/aws.svg"
                 alt="AWS"
+                width={64}
+                height={64}
                 className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
               />
               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -159,9 +162,11 @@ export default function Home() {
               </span>
             </div>
             <div className="relative group">
-              <img
+              <Image
                 src="/svg/amazoncognito.svg"
                 alt="Cognito"
+                width={64}
+                height={64}
                 className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
               />
               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -169,9 +174,11 @@ export default function Home() {
               </span>
             </div>
             <div className="relative group">
-              <img
+              <Image
                 src="/svg/amazondynamodb.svg"
                 alt="DynamoDB"
+                width={64}
+                height={64}
                 className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
               />
               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -179,9 +186,11 @@ export default function Home() {
               </span>
             </div>
             <div className="relative group">
-              <img
+              <Image
                 src="/svg/nextjs.svg"
                 alt="Next.js"
+                width={64}
+                height={64}
                 className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
               />
               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -189,9 +198,11 @@ export default function Home() {
               </span>
             </div>
             <div className="relative group">
-              <img
+              <Image
                 src="/svg/vercel.svg"
                 alt="Vercel"
+                width={64}
+                height={64}
                 className="h-[clamp(32px,4vw,64px)] w-auto hover:scale-110 transition-transform cursor-pointer"
               />
               <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
