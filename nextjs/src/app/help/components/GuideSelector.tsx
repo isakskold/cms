@@ -53,7 +53,7 @@ export const GuideSelector: React.FC<GuideSelectorProps> = ({
         <div className="flex items-center justify-between">
           <div className="text-left">
             <h3 className="font-medium text-[#557A9E] dark:text-white">
-              Boilerplate Components (Doesn't work yet)
+              Boilerplate Components (Doesn&apos;t work yet)
             </h3>
             <p className="text-sm text-[#9FB8CF] dark:text-gray-400 mt-1">
               Use our pre-built components for quick integration
