@@ -4,6 +4,10 @@ const createResponse = require("../../goodStuffToHave/createResponse");
 const client = new DynamoDBClient({ region: "eu-north-1" });
 
 exports.handler = async (event) => {
+  console.log(
+    "=== VERSION 2.0 - Enhanced project handling with detailed logging ==="
+  );
+
   try {
     // Extract API key and email from request headers
     const apiKey = event.headers["x-api-key"] || event.headers["X-API-Key"];
@@ -41,21 +45,71 @@ exports.handler = async (event) => {
     // Retrieve the user's projects and transform them
     const projects = user.Item.projects ? user.Item.projects.L : [];
 
-    const formattedProjects = projects.map((project) => {
-      const proj = project.M;
-      return {
-        id: proj.id.S,
-        lastEdited: proj.lastEdited.S,
-        name: proj.name.S,
-        logo: proj.logo.S,
-        description: proj.description.S,
-        longDescription: proj.longDescription.S,
-        skills: proj.skills.L.map((skill) => skill.S), // Convert skill list
-        website: proj.website.S,
-        github: proj.github.S,
-        images: proj.images.L.map((image) => image.S), // Convert image list
-      };
-    });
+    // Log the raw projects array structure
+    console.log("Projects array type:", typeof projects);
+    console.log("Projects array length:", projects.length);
+    console.log(
+      "First project structure:",
+      JSON.stringify(projects[0], null, 2)
+    );
+
+    const formattedProjects = projects
+      .map((project, index) => {
+        console.log(
+          `Processing project ${index}:`,
+          JSON.stringify(project, null, 2)
+        );
+
+        if (!project || typeof project !== "object") {
+          console.warn(
+            `Invalid project entry at index ${index}:`,
+            JSON.stringify(project, null, 2)
+          );
+          return null;
+        }
+
+        if (!project.M) {
+          console.warn(
+            `Malformed project entry at index ${index} (no .M):`,
+            JSON.stringify(project, null, 2)
+          );
+          return null;
+        }
+
+        const proj = project.M;
+        if (!proj || typeof proj !== "object") {
+          console.warn(
+            `Project.M is invalid at index ${index}:`,
+            JSON.stringify(project, null, 2)
+          );
+          return null;
+        }
+
+        // Log the structure of the project.M object
+        console.log(
+          `Project ${index} .M structure:`,
+          JSON.stringify(proj, null, 2)
+        );
+
+        // Safely access all properties with optional chaining and nullish coalescing
+        return {
+          id: proj.id?.S ?? "",
+          lastEdited: proj.lastEdited?.S ?? "",
+          name: proj.name?.S ?? "",
+          logo: proj.logo?.S ?? "",
+          description: proj.description?.S ?? "",
+          longDescription: proj.longDescription?.S ?? "",
+          skills: Array.isArray(proj.skills?.L)
+            ? proj.skills.L.map((skill) => skill?.S ?? "").filter(Boolean)
+            : [],
+          website: proj.website?.S ?? "",
+          github: proj.github?.S ?? "",
+          images: Array.isArray(proj.images?.L)
+            ? proj.images.L.map((image) => image?.S ?? "").filter(Boolean)
+            : [],
+        };
+      })
+      .filter(Boolean); // remove nulls
 
     return createResponse(200, "User's projects retrieved successfully", {
       email,
