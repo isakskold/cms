@@ -48,7 +48,7 @@ export default function Home() {
                 />
               </svg>
               <span className="text-[clamp(14px,1.4vw,22px)]">
-                Lightning-fast setup for portfolio websites
+                Intuitive content management interface
               </span>
             </li>
             <li className="flex items-start text-white gap-2">
@@ -66,7 +66,7 @@ export default function Home() {
                 />
               </svg>
               <span className="text-[clamp(14px,1.4vw,22px)]">
-                Smart components that adapt to your data
+                Flexible content modeling and schemas
               </span>
             </li>
             <li className="flex items-start text-white gap-2">
@@ -84,7 +84,7 @@ export default function Home() {
                 />
               </svg>
               <span className="text-[clamp(14px,1.4vw,22px)]">
-                Zero-configuration Next.js integration
+                Built on AWS for reliable performance
               </span>
             </li>
             <li className="flex items-start text-white gap-2">
@@ -102,7 +102,7 @@ export default function Home() {
                 />
               </svg>
               <span className="text-[clamp(14px,1.4vw,22px)]">
-                Enterprise-grade security with AWS Cognito
+                Secure authentication with AWS Cognito
               </span>
             </li>
             <li className="flex items-start text-white gap-2">
@@ -120,7 +120,25 @@ export default function Home() {
                 />
               </svg>
               <span className="text-[clamp(14px,1.4vw,22px)]">
-                API-first architecture
+                RESTful API with seamless custom integration
+              </span>
+            </li>
+            <li className="flex items-start text-white gap-2">
+              <svg
+                className="w-[clamp(16px,1.5vw,28px)] h-[clamp(16px,1.5vw,28px)] mt-0.5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              <span className="text-[clamp(14px,1.4vw,22px)]">
+                Boilerplate setup repo for quick deployment
               </span>
             </li>
           </ul>
@@ -233,47 +251,47 @@ export default function Home() {
       <div className="w-full md:w-1/2 p-[clamp(16px,4vw,32px)] bg-gradient-to-bl from-gray-100 via-gray-100 to-purple-600/80 relative z-0 md:before:content-[''] md:before:absolute md:before:left-0 md:before:top-2/3 md:before:bottom-0 md:before:w-8 md:before:bg-gradient-to-r md:before:from-purple-500/90 md:before:to-transparent md:before:blur-xl">
         <div className="h-full flex flex-col">
           <h2 className="text-[clamp(18px,4vw,28px)] font-bold text-gray-900 mb-[clamp(8px,2vh,16px)]">
-            Your Data, Your Structure, Our Components
+            Your Portfolio Content, Managed Simply
           </h2>
 
           <p className="text-[clamp(12px,0.9vw,16px)] text-gray-600 mb-[clamp(12px,3vh,20px)]">
-            Get your portfolio website up and running in minutes with our
-            lightweight headless CMS. Our smart components automatically adapt
-            to your data structure, making it easy to showcase your work exactly
-            how you want it.
+            A lightweight CMS for managing your portfolio data. Get started
+            quickly with our optional boilerplate setup that includes pre-built
+            components designed specifically for our API. This lets you showcase
+            your portfolio immediately, and if you want to make changes, the
+            simple structure makes it easy to modify. No complex setup or
+            configuration needed.
           </p>
 
           <div className="space-y-[clamp(12px,2vh,20px)] flex-grow overflow-y-auto">
             <div className="bg-gray-50 p-[clamp(12px,2vw,20px)] rounded-xl">
               <h3 className="text-[clamp(14px,1.1vw,18px)] font-semibold text-gray-900 mb-[clamp(4px,1vh,8px)]">
-                Smart Components
+                Easy Content Updates
               </h3>
               <p className="text-[clamp(11px,0.8vw,14px)] text-gray-600">
-                Our Next.js components intelligently adapt to your data
-                structure. No need to reconfigure components when your data
-                changes - they just work.
+                Update your portfolio content without touching code. Add
+                projects, skills, and experiences through a simple interface.
               </p>
             </div>
 
             <div className="bg-gray-50 p-[clamp(12px,2vw,20px)] rounded-xl">
               <h3 className="text-[clamp(14px,1.1vw,18px)] font-semibold text-gray-900 mb-[clamp(4px,1vh,8px)]">
-                Quick Setup
+                Quick Integration
               </h3>
               <p className="text-[clamp(11px,0.8vw,14px)] text-gray-600">
-                Get started in minutes with our simple setup process. Add your
-                content, choose your components, and deploy your portfolio
-                website.
+                Get started in minutes with our boilerplate. No complex setup or
+                configuration needed - just clone and deploy.
               </p>
             </div>
 
             <div className="bg-gray-50 p-[clamp(12px,2vw,20px)] rounded-xl">
               <h3 className="text-[clamp(14px,1.1vw,18px)] font-semibold text-gray-900 mb-[clamp(4px,1vh,8px)]">
-                Flexible Data Structure
+                Flexible Implementation
               </h3>
               <p className="text-[clamp(11px,0.8vw,14px)] text-gray-600">
-                Define your own data structure for your portfolio. Our
-                components will automatically adapt to display your content
-                perfectly.
+                Choose how you want to use your data. Use our full boilerplate
+                setup, integrate our pre-built components, or handle the data
+                fetching yourself. The choice is yours.
               </p>
             </div>
           </div>

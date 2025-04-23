@@ -2,64 +2,79 @@ import { Code, Terminal, Database, ExternalLink } from "lucide-react";
 import { GuideProps } from "./types";
 
 export const customGuide: GuideProps = {
-  title: "Custom Integration Guide",
-  description: "Learn how to integrate our API into your existing projects",
+  title: "API Integration Guide",
+  description: "Learn how to fetch your portfolio data using our API",
   steps: [
     {
       title: "Generate API Key",
-      description: "First, generate an API key from your dashboard settings.",
-      code: `// Store your API key securely
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-if (!API_KEY) throw new Error('API key is required');`,
-      language: "javascript",
+      description:
+        "First, go to your dashboard settings to generate a new API key that you'll use for authentication.",
+      code: `// Once generated, store your API key securely
+// Create a .env.local file in your Next.js project root and add:
+API_KEY=your-generated-api-key
+USER_EMAIL=your-email@example.com`,
+      language: "bash",
       icon: Code,
     },
     {
-      title: "Make API Requests",
-      description: "Use your API key to fetch content from our API.",
-      code: `// Example API request
-const fetchContent = async () => {
-  const response = await fetch('https://api.example.com/content', {
-    headers: {
-      'Authorization': \`Bearer \${API_KEY}\`,
-      'Content-Type': 'application/json'
-    }
-  });
-  return response.json();
-};`,
-      language: "javascript",
+      title: "Set Up API Call",
+      description:
+        "Create a function to fetch your projects using your API key and email.",
+      code: `// app/api/projects/route.ts or any component file
+async function fetchProjects() {
+  try {
+    const response = await fetch('https://2upf63jpgg.execute-api.eu-north-1.amazonaws.com/public', {
+      headers: {
+        'x-api-key': process.env.API_KEY,
+        'x-user-email': process.env.USER_EMAIL,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    const data = await response.json();
+    console.log('Fetched projects:', data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    throw error;
+  }
+}`,
+      language: "typescript",
       icon: Terminal,
     },
     {
-      title: "Display Content",
-      description: "Process the API response and display your content.",
-      code: `// React component example
-function Portfolio() {
-  const [projects, setProjects] = useState([]);
-  
+      title: "Test Your Integration",
+      description:
+        "You can now call this function wherever you need to fetch your projects. Here's a basic example:",
+      code: `// Example usage in a Next.js component
+'use client';
+
+import { useEffect } from 'react';
+// Don't forget to import the fetchProjects function from where you defined it
+import { fetchProjects } from '@/app/api/projects/route';
+
+export default function ProjectsPage() {
   useEffect(() => {
-    fetchContent()
-      .then(data => setProjects(data.projects))
-      .catch(error => console.error('Error:', error));
+    fetchProjects()
+      .then(data => {
+        // Your projects are in data.projects
+        console.log('Your projects:', data.projects);
+      })
+      .catch(error => console.error(error));
   }, []);
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {projects.map(project => (
-        <ProjectCard key={project.id} {...project} />
-      ))}
-    </div>
-  );
+  return <div>Check your console to see the fetched data!</div>;
 }`,
-      language: "jsx",
+      language: "tsx",
       icon: Database,
     },
   ],
 };
 
 export const boilerplateGuide: GuideProps = {
-  title: "Boilerplate Components Guide",
-  description: "Quick start with our pre-built components",
+  title: "Boilerplate Components Guide (NOT IMPLEMENTED YET)",
+  description:
+    "Quick start with our pre-built components (currently unavailable)",
   steps: [
     {
       title: "Install Package",
