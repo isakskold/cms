@@ -55,11 +55,11 @@ const GuideStep: React.FC<GuideStepProps> = ({
   return (
     <div className="w-full bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
       <div className="flex items-center gap-2 mb-3">
-        {Icon && <Icon className="w-5 h-5 text-blue-500" />}
-        <h3 className="font-medium text-gray-900 dark:text-white">{title}</h3>
+        {Icon && <Icon className="w-5 h-5 text-[#789DBC] dark:text-blue-500" />}
+        <h3 className="font-medium text-[#557A9E] dark:text-white">{title}</h3>
       </div>
 
-      <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+      <p className="text-[#9FB8CF] dark:text-gray-300 mb-4 text-sm">
         {description}
       </p>
 
@@ -68,7 +68,7 @@ const GuideStep: React.FC<GuideStepProps> = ({
           <div className="flex justify-start mb-2">
             <button
               onClick={handleCopy}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#FEF9F2] dark:bg-gray-700 hover:bg-[#FFE3E3] dark:hover:bg-gray-600 transition-colors text-sm"
               title={copied ? "Copied!" : "Copy to clipboard"}
             >
               {copied ? (
@@ -78,8 +78,8 @@ const GuideStep: React.FC<GuideStepProps> = ({
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                  <span className="text-gray-500 dark:text-gray-400">
+                  <Copy className="w-4 h-4 text-[#789DBC] dark:text-gray-400" />
+                  <span className="text-[#789DBC] dark:text-gray-400">
                     Copy code
                   </span>
                 </>
@@ -115,11 +115,11 @@ const GuideStep: React.FC<GuideStepProps> = ({
 const Guide: React.FC<GuideProps> = ({ title, description, steps }) => {
   return (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-[#FFE3E3] dark:border-gray-700">
+        <h2 className="text-xl font-semibold text-[#557A9E] dark:text-white mb-2">
           {title}
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 text-sm">
+        <p className="text-[#9FB8CF] dark:text-gray-300 text-sm">
           {description}
         </p>
       </div>
@@ -261,23 +261,23 @@ const theme = {
             }
             className={`p-6 rounded-lg border transition-all ${
               selectedGuide === "custom"
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+                ? "border-[#789DBC] bg-[#FEF9F2] dark:bg-blue-900/20"
+                : "border-[#FFE3E3] dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-[#FEF9F2] dark:hover:bg-gray-700"
             }`}
           >
             <div className="flex items-center justify-between">
               <div className="text-left">
-                <h3 className="font-medium text-gray-900 dark:text-white">
+                <h3 className="font-medium text-[#557A9E] dark:text-white">
                   Custom Integration
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-[#9FB8CF] dark:text-gray-400 mt-1">
                   Build your own integration using our API
                 </p>
               </div>
               {selectedGuide === "custom" ? (
-                <ChevronUp className="w-5 h-5 text-blue-500" />
+                <ChevronUp className="w-5 h-5 text-[#789DBC]" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
+                <ChevronDown className="w-5 h-5 text-[#9FB8CF]" />
               )}
             </div>
           </button>
@@ -290,23 +290,23 @@ const theme = {
             }
             className={`p-6 rounded-lg border transition-all ${
               selectedGuide === "boilerplate"
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+                ? "border-[#789DBC] bg-[#FEF9F2] dark:bg-blue-900/20"
+                : "border-[#FFE3E3] dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-[#FEF9F2] dark:hover:bg-gray-700"
             }`}
           >
             <div className="flex items-center justify-between">
               <div className="text-left">
-                <h3 className="font-medium text-gray-900 dark:text-white">
+                <h3 className="font-medium text-[#557A9E] dark:text-white">
                   Boilerplate Components
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-[#9FB8CF] dark:text-gray-400 mt-1">
                   Use our pre-built components for quick integration
                 </p>
               </div>
               {selectedGuide === "boilerplate" ? (
-                <ChevronUp className="w-5 h-5 text-blue-500" />
+                <ChevronUp className="w-5 h-5 text-[#789DBC]" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
+                <ChevronDown className="w-5 h-5 text-[#9FB8CF]" />
               )}
             </div>
           </button>

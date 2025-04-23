@@ -87,6 +87,75 @@ textarea:focus {
   box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.7); /* Subtle shadow around input */
 }
 
+/* Light mode class styles */
+.light-mode-panel {
+  background-color: #ffffff;
+  border: 1px solid #ffe3e3;
+  box-shadow: 0 1px 3px rgba(120, 157, 188, 0.1);
+}
+
+.light-mode-text {
+  color: #789dbc;
+}
+
+.light-mode-subtext {
+  color: #9fb8cf;
+}
+
+.light-mode-heading {
+  color: #557a9e;
+  font-weight: 600;
+}
+
+.light-mode-border {
+  border-color: #ffe3e3;
+}
+
+.light-mode-bg {
+  background-color: #fef9f2;
+}
+
+/* Add distinct hover states for interactive elements */
+.light-mode-panel:hover {
+  border-color: #789dbc;
+  box-shadow: 0 2px 6px rgba(120, 157, 188, 0.15);
+  transition: all 0.2s ease;
+}
+
+/* Add distinct focus states for form elements */
+.light-mode input,
+.light-mode textarea {
+  background-color: #ffffff;
+  border: 1px solid #ffe3e3;
+  box-shadow: inset 0 1px 2px rgba(120, 157, 188, 0.08);
+}
+
+.light-mode input:focus,
+.light-mode textarea:focus {
+  border-color: #789dbc;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(120, 157, 188, 0.15);
+}
+
+/* Add contrast to buttons */
+.light-mode button {
+  background-color: #789dbc;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 1px 2px rgba(120, 157, 188, 0.1);
+}
+
+.light-mode button:hover {
+  background-color: #557a9e;
+}
+
+/* Add styles for active elements */
+.light-mode button:active,
+.light-mode input:active {
+  border-color: #557a9e;
+  box-shadow: inset 0 1px 2px rgba(120, 157, 188, 0.2);
+}
+
 /* Dark mode class styles */
 .dark .dark-mode-panel {
   background-color: #1f2937;
