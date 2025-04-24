@@ -13,13 +13,11 @@ import {
   getSecondaryBgClasses,
   getSubtextClasses,
 } from "@/utils/darkModeClasses";
-import { useAuthStore } from "@/stores/auth/useAuthStore";
 import FeedbackBox from "@/components/feedback/FeedbackBox";
 
 export default function Dashboard() {
   const { projects, isHydrated, isLoading } = useProjectStore();
   const { isDarkMode } = useThemeStore();
-  const { isLoggedIn } = useAuthStore();
   const router = useRouter();
 
   const handleNewProject = () => {
