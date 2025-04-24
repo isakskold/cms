@@ -29,8 +29,7 @@ export default function Dashboard() {
 
   // Show loading spinner if:
   // 1. Not hydrated or still loading
-  // 2. User is logged in but projects haven't been fetched yet (length is 0)
-  if (!isHydrated || isLoading || (isLoggedIn && projects.length === 0)) {
+  if (!isHydrated || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
