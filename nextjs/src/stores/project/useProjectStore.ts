@@ -13,7 +13,6 @@ interface ProjectStore {
   removeProject: (id: string) => void;
   setInputProject: (project: Project | null) => void;
   setIsLoading: (isLoading: boolean) => void;
-  finishInitialLoad: () => void;
 }
 
 const useProjectStore = create<ProjectStore>()(
@@ -38,7 +37,6 @@ const useProjectStore = create<ProjectStore>()(
         })),
       setInputProject: (project) => set({ inputProject: project }),
       setIsLoading: (isLoading) => set({ isLoading }),
-      finishInitialLoad: () => set({ isHydrated: true, isLoading: false }),
     }),
     {
       name: "projects-store",

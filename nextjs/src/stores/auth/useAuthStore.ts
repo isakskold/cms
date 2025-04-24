@@ -31,6 +31,8 @@ export const useAuthStore = create<AuthStore>()(
 
         // If we have a token, fetch the projects
         if (tokenData?.access_token) {
+          // Set loading to true before fetching
+          useProjectStore.getState().setIsLoading(true);
           try {
             const projects = await fetchProjects(tokenData.access_token);
 
@@ -43,16 +45,16 @@ export const useAuthStore = create<AuthStore>()(
             } else {
               useProjectStore.getState().setProjects([]);
             }
-            // Set loading to false after projects are loaded
-            useProjectStore.getState().finishInitialLoad();
           } catch {
             useProjectStore.getState().setProjects([]);
-            // Also set loading to false if there was an error
-            useProjectStore.getState().finishInitialLoad();
+          } finally {
+            // Set loading to false after projects are loaded or if there was an error
+            useProjectStore.getState().setIsLoading(false);
           }
         } else {
           // If no token, clear projects
           useProjectStore.getState().setProjects([]);
+          useProjectStore.getState().setIsLoading(false);
         }
       },
 
