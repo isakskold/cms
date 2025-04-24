@@ -1,9 +1,8 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useThemeStore } from "@/stores/theme/useThemeStore";
 import useFeedbackStore from "@/stores/feedback/useFeedbackStore";
 import {
-  getPanelClasses,
   getHeadingClasses,
   getTextClasses,
   getSecondaryBgClasses,
