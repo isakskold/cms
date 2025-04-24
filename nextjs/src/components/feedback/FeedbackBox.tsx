@@ -32,7 +32,7 @@ const FeedbackBox = () => {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: "YOUR_ACCESS_KEY_HERE",
+          access_key: "1109ee81-24d5-405c-8adb-990f8e5e0d90",
           rating: `${rating} stars`,
           feedback: feedback,
           subject: "New User Feedback",
