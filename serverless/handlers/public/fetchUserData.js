@@ -92,22 +92,38 @@ exports.handler = async (event) => {
         );
 
         // Safely access all properties with optional chaining and nullish coalescing
-        return {
+        const projectData = {
           id: proj.id?.S ?? "",
           lastEdited: proj.lastEdited?.S ?? "",
           name: proj.name?.S ?? "",
-          logo: proj.logo?.S ?? "",
           description: proj.description?.S ?? "",
-          longDescription: proj.longDescription?.S ?? "",
-          skills: Array.isArray(proj.skills?.L)
-            ? proj.skills.L.map((skill) => skill?.S ?? "").filter(Boolean)
-            : [],
-          website: proj.website?.S ?? "",
-          github: proj.github?.S ?? "",
-          images: Array.isArray(proj.images?.L)
-            ? proj.images.L.map((image) => image?.S ?? "").filter(Boolean)
-            : [],
         };
+
+        // Ensure required fields are present
+        if (
+          !projectData.id ||
+          !projectData.lastEdited ||
+          !projectData.name ||
+          !projectData.description
+        ) {
+          console.warn(`Project at index ${index} is missing required fields`);
+          return null;
+        }
+
+        // Add all other fields from the database as they are
+        Object.entries(proj).forEach(([key, value]) => {
+          if (!["id", "lastEdited", "name", "description"].includes(key)) {
+            if (value.L) {
+              projectData[key] = value.L.map((item) => item?.S ?? "").filter(
+                Boolean
+              );
+            } else if (value.S) {
+              projectData[key] = value.S;
+            }
+          }
+        });
+
+        return projectData;
       })
       .filter(Boolean); // remove nulls
 
