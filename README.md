@@ -1,6 +1,15 @@
 # Content Management System, for portfolio websites
 
-A content management system application, used to managa portfolio data.
+A content management system application, used to managa portfolio data.  
+
+<img src="https://github.com/user-attachments/assets/2bd3972f-f6b2-44e6-b0a9-686013902477" width="800" />
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+  <img src="https://github.com/user-attachments/assets/ce1adb4d-c52b-4b2e-b2f3-1c2f8f086205" width="400" />
+  <img src="https://github.com/user-attachments/assets/03795e68-a48c-4f41-89a8-da966e5de783" width="400" />
+</div>
+
+
+
 
 ## How to use the application
 
