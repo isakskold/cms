@@ -479,6 +479,7 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                     onChange={(e) =>
                       handleUpdateField(field.id, e.target.value)
                     }
+                    placeholder={`Enter ${field.name.toLowerCase()} value`}
                     className={`${getSecondaryBgClasses(
                       isDarkMode
                     )} ${getTextClasses(
@@ -493,6 +494,7 @@ const EditFields: React.FC<Props> = ({ fields, onUpdate }) => {
                     onChange={(e) =>
                       handleUpdateField(field.id, e.target.value)
                     }
+                    placeholder={`Enter ${field.name.toLowerCase()} value`}
                     rows={3}
                     className={`${getSecondaryBgClasses(
                       isDarkMode
